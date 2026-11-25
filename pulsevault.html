@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PulseVault — Health Ingestion &amp; Family Vault</title>
+  <title>PulseVault — Health Ingestion &amp; Profiles</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -853,6 +853,357 @@ body {
 
 .vault-card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
 
+/* Profiles Tab Layout & Trajectory Simulator */
+.profiles-tab-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.profiles-left-col,
+.profiles-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-select-control {
+  margin-bottom: 12px;
+}
+
+.profile-select-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  margin-bottom: 5px;
+}
+
+.profile-custom-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(26, 31, 26, 0.15);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+  background: var(--surface-card);
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.profile-custom-select:focus {
+  border-color: var(--olive-accent);
+  box-shadow: 0 0 0 2px var(--olive-soft);
+  outline: none;
+}
+
+.profile-condition-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #FFF3E2;
+  color: #A25A12;
+  margin-top: 4px;
+}
+
+.profile-condition-pill.ok {
+  background: #E9EFE1;
+  color: #5B7443;
+}
+
+.trajectory-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.trajectory-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trajectory-person-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  line-height: 1.2;
+}
+
+.trajectory-person-meta {
+  font-size: 0.8rem;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+}
+
+.regimen-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.regimen-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.regimen-segmented-control {
+  display: inline-flex;
+  background: var(--surface-muted);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  gap: 4px;
+}
+
+.regimen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.regimen-btn:hover {
+  color: var(--ink-primary);
+}
+
+.regimen-btn.active {
+  background: var(--olive-accent);
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(110, 138, 82, 0.25);
+}
+
+.regimen-btn.active.uncontrolled {
+  background: #A32E2E !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 6px rgba(163, 46, 46, 0.25);
+}
+
+.traj-scenario-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  transition: background 250ms ease, border-color 250ms ease;
+}
+
+.traj-scenario-banner.maintained {
+  background: #E9EFE1;
+  border: 1px solid #C9DCBA;
+  color: #2B4219;
+}
+
+.traj-scenario-banner.uncontrolled {
+  background: #FCECEC;
+  border: 1px solid #F5C6C6;
+  color: #781E1E;
+}
+
+.scenario-banner-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.scenario-banner-content strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 3px;
+}
+
+.scenario-banner-content p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.92;
+  line-height: 1.4;
+}
+
+.traj-biomarkers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.traj-biomarker-card {
+  background: var(--surface-muted);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.traj-bio-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.traj-bio-val {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin: 3px 0;
+}
+
+.traj-bio-delta {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.traj-bio-delta.ok { color: #5B7443; }
+.traj-bio-delta.warn { color: #A25A12; }
+.traj-bio-delta.err { color: #A32E2E; }
+
+.prognostic-section {
+  margin-bottom: 18px;
+}
+
+.prognostic-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.prognostic-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: var(--surface-muted);
+  color: var(--ink-muted);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.prognostic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.prognostic-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 14px;
+  background: #FFFFFF;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.prognostic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.pillar-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pillar-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.pillar-icon.ok { background: #E9EFE1; color: #5B7443; }
+.pillar-icon.warn { background: #FFF3E2; color: #A25A12; }
+.pillar-icon.err { background: #FCECEC; color: #A32E2E; }
+
+.pillar-stat {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.pillar-desc {
+  font-size: 0.76rem;
+  color: var(--ink-secondary);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.trajectory-chart-wrap {
+  background: var(--surface-muted);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.chart-legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.trajectory-svg {
+  width: 100%;
+  height: 125px;
+  display: block;
+}
+
+.traj-levers-box {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+}
+
+.levers-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.lever-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-muted);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  color: var(--ink-primary);
+  font-weight: 500;
+}
+
 /* Forms */
 .stack-form { display: flex; flex-direction: column; gap: 12px; }
 
@@ -1059,18 +1410,18 @@ body {
       <nav class="nav-pill" id="mainNavPill" aria-label="Primary sections">
         <span class="nav-sliding-pill" id="navSlidingPill" aria-hidden="true"></span>
         <button class="nav-tab active" data-tab="overview" type="button">Overview</button>
-        <button class="nav-tab" data-tab="profiles" type="button">Family Vault</button>
+        <button class="nav-tab" data-tab="profiles" type="button">Profiles</button>
         <button class="nav-tab" data-tab="ingest" type="button">Ingest &amp; Verify</button>
         <button class="nav-tab" data-tab="cohort" type="button">Synthetic Cohorts</button>
       </nav>
 
       <div class="topbar-right">
-        <button id="demoSeedBtn" class="utility-pill-btn" type="button" title="Populate sample family profiles and lab report">
+        <button id="demoSeedBtn" class="utility-pill-btn" type="button" title="Populate sample profiles and lab report">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3v12m0 0 4-4m-4 4-4-4"></path>
             <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
           </svg>
-          <span>Load Sample Vault</span>
+          <span>Load Sample Profiles</span>
         </button>
         <button id="complianceBadgeBtn" class="icon-circle-btn" type="button" title="Vault security and compliance status" aria-label="Vault security status">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1192,13 +1543,13 @@ body {
           </div>
         </article>
 
-        <!-- Card 2: Family Profiles (Max 5) -->
+        <!-- Card 2: Profiles (Max 5) -->
         <article class="card card-profiles-list">
           <div class="card-head">
-            <h2>Family Profiles</h2>
+            <h2>Profiles</h2>
             <button id="openAddProfileModalBtn" class="text-action-btn" type="button">+ Add (max 5)</button>
           </div>
-          <div id="overviewProfilesList" class="entity-list"><div class="empty-state">Add your first profile or click Load Sample Vault above.</div></div>
+          <div id="overviewProfilesList" class="entity-list"><div class="empty-state">Add your first profile or click Load Sample Profiles above.</div></div>
         </article>
 
         <!-- Card 3: Uploaded Lab Reports -->
@@ -1341,63 +1692,205 @@ body {
       </div>
     </main>
 
-    <!-- TAB 2: FAMILY VAULT (5-PROFILE + CONSENT MANAGER) -->
+    <!-- TAB 2: PROFILES & PROGNOSTIC TRAJECTORY SIMULATOR -->
     <main id="tab-profiles" class="tab-panel hidden">
-      <div class="two-col-layout">
-        <article class="card">
-          <div class="card-head">
-            <h2>Linked Family Profiles (<span id="vaultCountHeader">0</span> / 5)</h2>
-            <span class="chip-muted">DPDP Act Consent Gate</span>
-          </div>
-          <p class="muted-copy">
-            Each account owner can manage up to 5 profiles. Non-self profiles require explicit recorded consent before health reports can be uploaded or processed.
-          </p>
-          <div id="profilesGrid" class="profiles-cards-grid"><div class="empty-state">Create up to 5 family profiles on the right.</div></div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h2>Add Linked Profile</h2>
-          </div>
-          <form id="createProfileForm" class="stack-form">
-            <label>
-              <span>Name / Alias</span>
-              <input id="newProfileAlias" type="text" required maxlength="80" placeholder="e.g. Meera (Mother)">
-            </label>
-            <div class="form-row-2">
-              <label>
-                <span>Relationship</span>
-                <select id="newProfileRel">
-                  <option value="self">Self</option>
-                  <option value="parent">Parent</option>
-                  <option value="spouse">Spouse</option>
-                  <option value="child">Child</option>
-                  <option value="other">Other</option>
-                </select>
-              </label>
-              <label>
-                <span>Biological Sex</span>
-                <select id="newProfileSex">
-                  <option value="M">Male (M)</option>
-                  <option value="F">Female (F)</option>
-                  <option value="O">Other (O)</option>
-                </select>
-              </label>
+      <div class="profiles-tab-layout">
+        <!-- Left Column: Quick Profile Switcher, Directory & Add Person Form -->
+        <div class="profiles-left-col">
+          <article class="card">
+            <div class="card-head">
+              <h2>Profiles Directory (<span id="vaultCountHeader">0</span> / 5)</h2>
+              <span class="chip-muted">DPDP Consent</span>
             </div>
-            <label>
-              <span>Age (Years)</span>
-              <input id="newProfileAge" type="number" min="0" max="120" required value="34">
-            </label>
-            <label class="checkbox-card">
-              <input id="newProfileConsent" type="checkbox">
-              <span>
-                <strong>DPDP / HIPAA Consent Verified</strong>
-                <small>I confirm I hold explicit informed consent from this individual to store and normalize their medical reports.</small>
-              </span>
-            </label>
-            <button id="createProfileSubmit" class="primary-olive-btn" type="submit">Create Profile</button>
-          </form>
-        </article>
+            <div class="profile-select-control">
+              <label for="profilesTabSelect" class="profile-select-label">Quick Switch Person</label>
+              <select id="profilesTabSelect" class="profile-custom-select" aria-label="Select Active Profile">
+                <!-- Dynamically populated via JS -->
+              </select>
+            </div>
+            <div id="profilesGrid" class="profiles-cards-grid">
+              <div class="empty-state">No profiles found.</div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Add New Person</h2>
+              <span class="chip-muted">Profile Registry</span>
+            </div>
+            <form id="createProfileForm" class="stack-form">
+              <label>
+                <span>Full Name / Alias</span>
+                <input id="newProfileAlias" type="text" required maxlength="80" placeholder="e.g. Meera (Mother)">
+              </label>
+              <div class="form-row-2">
+                <label>
+                  <span>Relationship</span>
+                  <select id="newProfileRel">
+                    <option value="self">Self</option>
+                    <option value="parent">Parent</option>
+                    <option value="spouse">Spouse</option>
+                    <option value="child">Child</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Biological Sex</span>
+                  <select id="newProfileSex">
+                    <option value="M">Male (M)</option>
+                    <option value="F">Female (F)</option>
+                    <option value="O">Other (O)</option>
+                  </select>
+                </label>
+              </div>
+              <div class="form-row-2">
+                <label>
+                  <span>Age (Years)</span>
+                  <input id="newProfileAge" type="number" min="0" max="120" required value="48">
+                </label>
+                <label>
+                  <span>Primary Condition Focus</span>
+                  <select id="newProfileCondition">
+                    <option value="diabetes" selected>Type 2 Diabetes (Glycemic)</option>
+                    <option value="prediabetes">Prediabetes (Impaired Fasting)</option>
+                    <option value="hypertension">Hypertension (Vascular)</option>
+                    <option value="lipids">Dyslipidemia (Cardiovascular)</option>
+                    <option value="healthy">Healthy Baseline</option>
+                  </select>
+                </label>
+              </div>
+              <label class="checkbox-card">
+                <input id="newProfileConsent" type="checkbox">
+                <span>
+                  <strong>DPDP / HIPAA Consent Verified</strong>
+                  <small>Explicit informed consent recorded to store and model longitudinal health trajectory.</small>
+                </span>
+              </label>
+              <button id="createProfileSubmit" class="primary-olive-btn" type="submit">Add Person</button>
+            </form>
+          </article>
+        </div>
+
+        <!-- Right Column: Condition & Clinical Prognosis Simulator -->
+        <div class="profiles-right-col">
+          <article class="card" id="trajectorySimulatorCard">
+            <!-- Trajectory Header with Profile Info & Adherence Toggle -->
+            <div class="trajectory-head">
+              <div class="trajectory-profile-badge">
+                <div class="avatar-circle" id="trajPersonAvatar">EN</div>
+                <div>
+                  <div class="trajectory-person-name" id="trajPersonName">Elisa Nilsson</div>
+                  <div class="trajectory-person-meta">
+                    <span id="trajPersonMeta">Self · 38y F</span>
+                    <span id="trajConditionBadge" class="profile-condition-pill">Type 2 Diabetes</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="regimen-toggle-container">
+                <span class="regimen-toggle-label">Clinical Adherence:</span>
+                <div class="regimen-segmented-control" role="group" aria-label="Adherence Mode">
+                  <button type="button" id="btnRegimenMaintained" class="regimen-btn active" title="Adherent to medication, nutrition, and exercise">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Maintained (Adherent)</span>
+                  </button>
+                  <button type="button" id="btnRegimenUncontrolled" class="regimen-btn" title="Uncontrolled, skipped therapy, high glycemic variability">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <span>Uncontrolled (Poor Adherence)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Scenario Banner -->
+            <div id="trajScenarioBanner" class="traj-scenario-banner maintained">
+              <div class="scenario-banner-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              </div>
+              <div class="scenario-banner-content">
+                <strong id="trajScenarioTitle">Stabilized Glycemic &amp; Vascular Trajectory</strong>
+                <p id="trajScenarioDesc">With disciplined glycemic control, balanced nutrition, and consistent medication adherence, microvascular and macrovascular complication probabilities drop by up to 74% over 10 years.</p>
+              </div>
+            </div>
+
+            <!-- Key Projected Biomarkers 4-Grid -->
+            <div class="traj-biomarkers-grid" id="trajBiomarkersGrid">
+              <div class="traj-biomarker-card">
+                <div class="traj-bio-label">Projected HbA1c</div>
+                <div class="traj-bio-val mono-num" id="bioValA1c">5.8%</div>
+                <div class="traj-bio-delta ok" id="bioDeltaA1c">Optimal Target (&lt;6.5%)</div>
+              </div>
+              <div class="traj-biomarker-card">
+                <div class="traj-bio-label">Fasting Blood Sugar</div>
+                <div class="traj-bio-val mono-num" id="bioValFbs">98 mg/dL</div>
+                <div class="traj-bio-delta ok" id="bioDeltaFbs">Euglycemic Range</div>
+              </div>
+              <div class="traj-biomarker-card">
+                <div class="traj-bio-label">Blood Pressure</div>
+                <div class="traj-bio-val mono-num" id="bioValBp">118/76</div>
+                <div class="traj-bio-delta ok" id="bioDeltaBp">Normotensive Target</div>
+              </div>
+              <div class="traj-biomarker-card">
+                <div class="traj-bio-label">10-Yr Quality Index</div>
+                <div class="traj-bio-val mono-num" id="bioValQol">94 / 100</div>
+                <div class="traj-bio-delta ok" id="bioDeltaQol">Low Clinical Frailty</div>
+              </div>
+            </div>
+
+            <!-- Prognostic Organ & Complication Matrix ("What could it lead to") -->
+            <div class="prognostic-section">
+              <div class="prognostic-heading">
+                <span>10-Year Prognostic Outlook: What Could It Lead To?</span>
+                <span class="prognostic-tag" id="prognosticTag">Evidence-Based UKPDS Simulation</span>
+              </div>
+              <div class="prognostic-grid" id="prognosticGrid">
+                <!-- 4 organ pillar cards animated via GSAP -->
+              </div>
+            </div>
+
+            <!-- Longitudinal Trajectory Chart Visualization (SVG) -->
+            <div class="trajectory-chart-wrap">
+              <div class="chart-legend-row">
+                <span>10-Year Longitudinal Microvascular &amp; Glycemic Risk Curve</span>
+                <span id="chartLegendStatus" style="color: var(--olive-accent); font-weight: 700;">Trajectory: Controlled (Target Range)</span>
+              </div>
+              <svg class="trajectory-svg" viewBox="0 0 500 130" preserveAspectRatio="none">
+                <!-- Grid Lines -->
+                <line x1="40" y1="20" x2="480" y2="20" stroke="rgba(26,31,26,0.06)" stroke-width="1" stroke-dasharray="4 4" />
+                <line x1="40" y1="65" x2="480" y2="65" stroke="rgba(26,31,26,0.06)" stroke-width="1" stroke-dasharray="4 4" />
+                <line x1="40" y1="110" x2="480" y2="110" stroke="rgba(26,31,26,0.06)" stroke-width="1" />
+
+                <!-- X Axis Labels -->
+                <text x="45" y="125" fill="#7A8077" font-size="10" font-family="sans-serif">Baseline (Year 0)</text>
+                <text x="180" y="125" fill="#7A8077" font-size="10" font-family="sans-serif">Year 3</text>
+                <text x="320" y="125" fill="#7A8077" font-size="10" font-family="sans-serif">Year 7</text>
+                <text x="440" y="125" fill="#7A8077" font-size="10" font-family="sans-serif">Year 10</text>
+
+                <!-- Dynamic Path drawn with GSAP -->
+                <path id="svgTrajectoryArea" d="M45,95 Q180,98 320,92 T470,88 L470,110 L45,110 Z" fill="rgba(110,138,82,0.18)"></path>
+                <path id="svgTrajectoryPath" d="M45,95 Q180,98 320,92 T470,88" fill="none" stroke="#6E8A52" stroke-width="3.5" stroke-linecap="round"></path>
+                
+                <!-- Risk Threshold Guideline -->
+                <line x1="40" y1="40" x2="480" y2="40" stroke="#D9822B" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6" />
+                <text x="370" y="36" fill="#A25A12" font-size="9" font-weight="600" font-family="sans-serif">High Complication Threshold</text>
+              </svg>
+            </div>
+
+            <!-- Actionable Levers / Intervention Recommendations -->
+            <div class="traj-levers-box">
+              <strong id="trajLeversHeading">Actionable Clinical Levers for Maintained Diabetes Control:</strong>
+              <div class="levers-row" id="trajLeversRow">
+                <span class="lever-badge">🥗 Complex carbohydrates &amp; high dietary fiber (&gt;35g/day)</span>
+                <span class="lever-badge">🏃 150 min/wk moderate aerobic + resistance training</span>
+                <span class="lever-badge">💊 Metformin / SGLT2i regular daily compliance</span>
+                <span class="lever-badge">👁️ Annual dilated retinal &amp; microalbuminuria screening</span>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </main>
 
@@ -1412,7 +1905,7 @@ body {
 
           <div id="consentBlockNotice" class="alert-box warn hidden">
             <strong>Upload Blocked — Consent Required</strong>
-            <p>This profile is non-self and does not have recorded consent. Grant consent in Family Vault before uploading.</p>
+            <p>This profile is non-self and does not have recorded consent. Grant consent in Profiles before uploading.</p>
           </div>
 
           <form id="studioUploadForm" class="stack-form">
@@ -1698,6 +2191,484 @@ function showToast(message, isError = false) {
 }
 
 
+/* Clinical Prognostic Models for Longitudinal Trajectory Simulation */
+const PROFILE_CONDITIONS_STORAGE_KEY = "pulsevault_profile_conditions_v1";
+
+const CLINICAL_PROGNOSTIC_MODELS = {
+  diabetes: {
+    name: "Type 2 Diabetes (Glycemic)",
+    maintained: {
+      title: "Stabilized Glycemic & Microvascular Protection",
+      description: "Consistent adherence to medical therapy, balanced carbohydrate intake, and regular physical activity keeps HbA1c within target (<6.5%), halting capillary basement membrane thickening and preserving microvascular perfusion.",
+      bannerClass: "maintained",
+      biomarkers: {
+        a1c: { val: "5.8%", delta: "Optimal Target (<6.5%)", cls: "ok", num: 5.8 },
+        fbs: { val: "98 mg/dL", delta: "Euglycemic Range", cls: "ok", num: 98 },
+        bp: { val: "118/76", delta: "Normotensive Target", cls: "ok" },
+        qol: { val: "94 / 100", delta: "Low Clinical Frailty", cls: "ok", num: 94 }
+      },
+      prognosis: [
+        {
+          icon: "👁️",
+          iconCls: "ok",
+          pillar: "Diabetic Retinopathy",
+          stat: "< 4% Risk",
+          desc: "Vision fully preserved; retinal capillary pericytes remain intact, preventing microaneurysms and macular edema."
+        },
+        {
+          icon: "🫘",
+          iconCls: "ok",
+          pillar: "Nephropathy & Kidney Function",
+          stat: "eGFR > 90 mL/min",
+          desc: "Glomerular filtration intact; microalbuminuria remains negative, avoiding hyperfiltration injury and dialysis risk."
+        },
+        {
+          icon: "❤️",
+          iconCls: "ok",
+          pillar: "Cardiovascular (MACE Risk)",
+          stat: "74% Lower Risk",
+          desc: "Endothelial nitric oxide synthase preserved; coronary and cerebral arteries remain free of accelerated plaque calcification."
+        },
+        {
+          icon: "🦶",
+          iconCls: "ok",
+          pillar: "Peripheral Neuropathy & Sensation",
+          stat: "Intact Sensation",
+          desc: "Full monofilament sensation in lower extremities; normal nerve conduction prevents paresthesia, skin breakdown, and ulcers."
+        }
+      ],
+      curvePath: "M45,95 Q180,98 320,92 T470,88",
+      curveArea: "M45,95 Q180,98 320,92 T470,88 L470,110 L45,110 Z",
+      strokeColor: "#6E8A52",
+      fillColor: "rgba(110,138,82,0.18)",
+      legend: "Trajectory: Controlled (Target Range)",
+      leversHeading: "Actionable Levers for Maintained Diabetes Control:",
+      levers: [
+        "🥗 Complex carbohydrates & high dietary fiber (>35g/day)",
+        "🏃 150 min/wk moderate aerobic + resistance training",
+        "💊 Metformin / SGLT2i regular daily compliance",
+        "👁️ Annual dilated retinal & urine microalbuminuria screening"
+      ]
+    },
+    uncontrolled: {
+      title: "Accelerated Multi-Organ Complication Trajectory",
+      description: "Poor adherence or unmanaged glycemic variability causes sustained advanced glycation end-products (AGEs), chronic vascular inflammation, and progressive irreversible organ damage across eyes, kidneys, nerves, and heart.",
+      bannerClass: "uncontrolled",
+      biomarkers: {
+        a1c: { val: "9.4%", delta: "Critical Elevation (Target <6.5%)", cls: "err", num: 9.4 },
+        fbs: { val: "194 mg/dL", delta: "Severe Hyperglycemia", cls: "err", num: 194 },
+        bp: { val: "146/92", delta: "Stage 2 Hypertension", cls: "err" },
+        qol: { val: "48 / 100", delta: "High Morbidity & Frailty", cls: "err", num: 48 }
+      },
+      prognosis: [
+        {
+          icon: "👁️",
+          iconCls: "err",
+          pillar: "Diabetic Retinopathy & Vision Loss",
+          stat: "42% Incidence",
+          desc: "Capillary occlusion and retinal ischemia lead to proliferative neovascularization, vitreous hemorrhage, and potential blindness."
+        },
+        {
+          icon: "🫘",
+          iconCls: "err",
+          pillar: "Diabetic Kidney Disease (ESRD)",
+          stat: "38% Proteinuria Risk",
+          desc: "Mesangial expansion and nodular glomerulosclerosis progress to overt macroalbuminuria and progressive renal failure."
+        },
+        {
+          icon: "❤️",
+          iconCls: "err",
+          pillar: "Cardiovascular Infarction & Stroke",
+          stat: "3.4x Elevated MACE",
+          desc: "Accelerated atherogenesis dramatically spikes probability of myocardial infarction, heart failure, and ischemic stroke."
+        },
+        {
+          icon: "🦶",
+          iconCls: "err",
+          pillar: "Diabetic Neuropathy & Ulcers",
+          stat: "51% Nerve Loss",
+          desc: "Loss of protective sensation (LOPS) and microvascular ischemia lead to chronic non-healing foot ulcers and amputation danger."
+        }
+      ],
+      curvePath: "M45,95 Q180,72 320,40 T470,20",
+      curveArea: "M45,95 Q180,72 320,40 T470,20 L470,110 L45,110 Z",
+      strokeColor: "#A32E2E",
+      fillColor: "rgba(163,46,46,0.18)",
+      legend: "Trajectory: High Complication Acceleration",
+      leversHeading: "Urgent Interventions to Prevent Disease Progression:",
+      levers: [
+        "🚨 Immediate endocrinology review & basal/bolus insulin titration",
+        "🩸 CGM (Continuous Glucose Monitor) for time-in-range tracking",
+        "🫀 ACEi/ARB renal-protective vascular therapy",
+        "🦶 Podiatric monofilament assessment & strict daily foot checks"
+      ]
+    }
+  },
+  hypertension: {
+    name: "Hypertension (Vascular)",
+    maintained: {
+      title: "Optimized Vascular Elasticity & Hemodynamic Protection",
+      description: "Consistent blood pressure control (<120/80 mmHg) mitigates arterial wall shear stress, prevents left ventricular hypertrophy (LVH), and prevents microvascular cerebral small vessel disease.",
+      bannerClass: "maintained",
+      biomarkers: {
+        a1c: { val: "5.4%", delta: "Normal Glycemic Target", cls: "ok", num: 5.4 },
+        fbs: { val: "92 mg/dL", delta: "Optimal Fasting Glucose", cls: "ok", num: 92 },
+        bp: { val: "118/76", delta: "Optimal Target (<120/80)", cls: "ok" },
+        qol: { val: "92 / 100", delta: "Cardiovascular Reserve", cls: "ok", num: 92 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "ok",
+          pillar: "Left Ventricular Remodeling",
+          stat: "Normal Geometry",
+          desc: "Preserved ejection fraction (>60%); no concentric wall thickening or diastolic filling stiffness."
+        },
+        {
+          icon: "🧠",
+          iconCls: "ok",
+          pillar: "Cerebrovascular & Cognitive Health",
+          stat: "82% Lower Stroke Risk",
+          desc: "Low shear forces protect cerebral arterioles, preventing lacunar infarcts, microbleeds, and vascular dementia."
+        },
+        {
+          icon: "🫘",
+          iconCls: "ok",
+          pillar: "Renal Vascular Integrity",
+          stat: "Intact Glomerular Flow",
+          desc: "Afferent arteriole tone maintained, halting nephrosclerosis and preserving lifelong filtration."
+        },
+        {
+          icon: "👁️",
+          iconCls: "ok",
+          pillar: "Hypertensive Retinopathy",
+          stat: "Clear Fundus",
+          desc: "No arteriolar narrowing, silver wiring, or optic disc edema observed."
+        }
+      ],
+      curvePath: "M45,98 Q180,95 320,93 T470,89",
+      curveArea: "M45,98 Q180,95 320,93 T470,89 L470,110 L45,110 Z",
+      strokeColor: "#6E8A52",
+      fillColor: "rgba(110,138,82,0.18)",
+      legend: "Trajectory: Controlled Hemodynamics",
+      leversHeading: "Actionable Levers for Blood Pressure Maintenance:",
+      levers: [
+        "🧂 Low sodium intake (<2,000 mg/day) and DASH diet",
+        "🏃 Consistent cardiovascular exercise (brisk walking/cycling)",
+        "💊 Adherence to prescribed antihypertensive therapy",
+        "🧘 Stress reduction and sleep hygiene (>7 hrs/night)"
+      ]
+    },
+    uncontrolled: {
+      title: "Severe Hemodynamic Stress & Target Organ Damage",
+      description: "Sustained arterial pressures above 150/95 mmHg induce mechanical endothelial shearing, smooth muscle hypertrophy, vessel sclerosis, and high risk of catastrophic vascular rupture or occlusion.",
+      bannerClass: "uncontrolled",
+      biomarkers: {
+        a1c: { val: "5.7%", delta: "Borderline", cls: "warn", num: 5.7 },
+        fbs: { val: "106 mg/dL", delta: "Mild Impairment", cls: "warn", num: 106 },
+        bp: { val: "162/98", delta: "Stage 2 Severe Hypertension", cls: "err" },
+        qol: { val: "52 / 100", delta: "Elevated Vulnerability", cls: "err", num: 52 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "err",
+          pillar: "Congestive Heart Failure (CHF)",
+          stat: "3.1x Failure Rate",
+          desc: "Concentric left ventricular hypertrophy degenerates into diastolic and systolic dysfunction."
+        },
+        {
+          icon: "🧠",
+          iconCls: "err",
+          pillar: "Hemorrhagic & Ischemic Stroke",
+          stat: "48% 10-Yr Incidence",
+          desc: "Charcot-Bouchard microaneurysms and ruptured cerebral penetrating arteries causing debilitating stroke."
+        },
+        {
+          icon: "🫘",
+          iconCls: "err",
+          pillar: "Hypertensive Nephrosclerosis",
+          stat: "Accelerated eGFR Loss",
+          desc: "Fibrinoid necrosis of arterioles leading to progressive renal insufficiency."
+        },
+        {
+          icon: "👁️",
+          iconCls: "err",
+          pillar: "Retinal Hemorrhages & Cotton Wool",
+          stat: "Stage 3 Retinopathy",
+          desc: "Flame hemorrhages, arteriovenous nicking, and optic disc swelling risking visual impairment."
+        }
+      ],
+      curvePath: "M45,95 Q180,68 320,38 T470,18",
+      curveArea: "M45,95 Q180,68 320,38 T470,18 L470,110 L45,110 Z",
+      strokeColor: "#A32E2E",
+      fillColor: "rgba(163,46,46,0.18)",
+      legend: "Trajectory: High Hemodynamic Damage Risk",
+      leversHeading: "Urgent Interventions to Mitigate Crisis:",
+      levers: [
+        "🚨 Combination antihypertensive therapy (CCB + ARB / Thiazide)",
+        "📉 Home blood pressure monitoring twice daily (morning & night)",
+        "🍷 Total restriction of alcohol and tobacco",
+        "🩺 Echocardiogram & renal artery Doppler evaluation"
+      ]
+    }
+  },
+  lipids: {
+    name: "Dyslipidemia (Cardiovascular)",
+    maintained: {
+      title: "Optimized Lipid Fractions & Plaque Stabilization",
+      description: "Targeted apolipoprotein B and LDL-C reduction (<70 mg/dL) arrests the buildup of lipid-rich necrotic cores within arterial walls, stabilizing fibrous caps.",
+      bannerClass: "maintained",
+      biomarkers: {
+        a1c: { val: "5.3%", delta: "Euglycemic", cls: "ok", num: 5.3 },
+        fbs: { val: "91 mg/dL", delta: "Normal Fasting Sugar", cls: "ok", num: 91 },
+        bp: { val: "116/74", delta: "Normal BP", cls: "ok" },
+        qol: { val: "95 / 100", delta: "Optimal Atherogenic Index", cls: "ok", num: 95 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "ok",
+          pillar: "Coronary Artery Calcium (CAC)",
+          stat: "Arrested Plaque Progression",
+          desc: "Statin stabilization thickens fibrous caps, virtually eliminating acute rupture."
+        },
+        {
+          icon: "🩸",
+          iconCls: "ok",
+          pillar: "Atherogenic Lipoproteins (ApoB)",
+          stat: "Low Circulating Particles",
+          desc: "LDL-C < 70 mg/dL prevents subendothelial retention and foam cell formation."
+        },
+        {
+          icon: "🧠",
+          iconCls: "ok",
+          pillar: "Carotid Stenosis Protection",
+          stat: "Patent Carotid Lumens",
+          desc: "Clear arterial blood flow preserves cerebral oxygenation and reduces TIA risk."
+        },
+        {
+          icon: "🏃",
+          iconCls: "ok",
+          pillar: "Peripheral Arterial Flow",
+          stat: "Normal ABI (1.0 - 1.2)",
+          desc: "No intermittent claudication or limb ischemia during exertion."
+        }
+      ],
+      curvePath: "M45,96 Q180,95 320,91 T470,86",
+      curveArea: "M45,96 Q180,95 320,91 T470,86 L470,110 L45,110 Z",
+      strokeColor: "#6E8A52",
+      fillColor: "rgba(110,138,82,0.18)",
+      legend: "Trajectory: Stable Atherosclerotic Burden",
+      leversHeading: "Actionable Levers for Lipid Control:",
+      levers: [
+        "🥑 High monounsaturated fats (Mediterranean / omega-3)",
+        "💊 Daily Statin / Ezetimibe compliance",
+        "🏃 Weekly aerobic conditioning (raising HDL / lowering TG)",
+        "🩺 Fasting lipid panel and hs-CRP monitoring every 6 months"
+      ]
+    },
+    uncontrolled: {
+      title: "Active Plaque Accumulation & High Thrombus Risk",
+      description: "Elevated oxidized LDL-C (>160 mg/dL) and triglycerides promote active foam cell cascades, necrotic core expansion, and vulnerable unstable arterial plaques prone to rupture.",
+      bannerClass: "uncontrolled",
+      biomarkers: {
+        a1c: { val: "5.8%", delta: "Mild Impairment", cls: "warn", num: 5.8 },
+        fbs: { val: "102 mg/dL", delta: "Borderline", cls: "warn", num: 102 },
+        bp: { val: "138/88", delta: "Pre-hypertensive", cls: "warn" },
+        qol: { val: "50 / 100", delta: "High Atherosclerotic Risk", cls: "err", num: 50 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "err",
+          pillar: "Acute Myocardial Infarction",
+          stat: "3.8x Elevated Risk",
+          desc: "Thin-cap fibroatheroma vulnerable to erosion and occlusive thrombosis."
+        },
+        {
+          icon: "🩸",
+          iconCls: "err",
+          pillar: "Hypertriglyceridemic Pancreatitis",
+          stat: "Elevated VLDL & Triglycerides",
+          desc: "Chylomicronemia and high serum triglycerides triggering microvascular inflammation."
+        },
+        {
+          icon: "🧠",
+          iconCls: "err",
+          pillar: "Carotid Plaque & Embolic Stroke",
+          stat: "High Embolization Threat",
+          desc: "Ulcerated carotid plaques shedding debris into middle cerebral artery branches."
+        },
+        {
+          icon: "🏃",
+          iconCls: "err",
+          pillar: "Peripheral Artery Disease (PAD)",
+          stat: "Claudication / Low ABI",
+          desc: "Progressive femoral-popliteal stenosis restricting walking distance."
+        }
+      ],
+      curvePath: "M45,95 Q180,70 320,42 T470,22",
+      curveArea: "M45,95 Q180,70 320,42 T470,22 L470,110 L45,110 Z",
+      strokeColor: "#A32E2E",
+      fillColor: "rgba(163,46,46,0.18)",
+      legend: "Trajectory: High Cardiovascular Complication Acceleration",
+      leversHeading: "Urgent Interventions for Atherosclerotic Risk Reduction:",
+      levers: [
+        "🚨 High-intensity statin therapy (Atorvastatin 40-80mg or Rosuvastatin)",
+        "💉 Consideration of PCSK9 inhibitor for refractory LDL-C",
+        "🥗 Elimination of trans fats and ultra-processed carbohydrates",
+        "🩻 Coronary CT Angiography (CCTA) to quantify soft plaque volume"
+      ]
+    }
+  },
+  healthy: {
+    name: "Healthy Baseline",
+    maintained: {
+      title: "Optimal Longevity & Metabolic Resilience",
+      description: "Consistent preventative wellness, circadian alignment, restorative sleep, and nutrient-dense whole foods sustain mitochondrial health and physiological reserve across aging.",
+      bannerClass: "maintained",
+      biomarkers: {
+        a1c: { val: "5.1%", delta: "Optimal Euglycemia", cls: "ok", num: 5.1 },
+        fbs: { val: "88 mg/dL", delta: "Normal Glucose", cls: "ok", num: 88 },
+        bp: { val: "115/72", delta: "Ideal Resting Hemodynamics", cls: "ok" },
+        qol: { val: "98 / 100", delta: "Exceptional Health Span", cls: "ok", num: 98 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "ok",
+          pillar: "Cardiovascular Health Span",
+          stat: "< 2% 10-Yr MACE",
+          desc: "Flexible, compliant arterial walls with minimal endothelial inflammation."
+        },
+        {
+          icon: "🧬",
+          iconCls: "ok",
+          pillar: "Metabolic Homeostasis",
+          stat: "High Insulin Sensitivity",
+          desc: "Rapid post-prandial glycemic clearance and high cellular mitochondrial density."
+        },
+        {
+          icon: "🧠",
+          iconCls: "ok",
+          pillar: "Neurocognitive Longevity",
+          stat: "Intact Executive Function",
+          desc: "Robust hippocampal volume and regular glymphatic neuro-waste clearance."
+        },
+        {
+          icon: "💪",
+          iconCls: "ok",
+          pillar: "Musculoskeletal & Mobility",
+          stat: "Preserved Lean Mass",
+          desc: "Strong bone mineral density and muscular power guarding against frailty."
+        }
+      ],
+      curvePath: "M45,102 Q180,100 320,98 T470,96",
+      curveArea: "M45,102 Q180,100 320,98 T470,96 L470,110 L45,110 Z",
+      strokeColor: "#6E8A52",
+      fillColor: "rgba(110,138,82,0.18)",
+      legend: "Trajectory: Optimal Preventative Longevity",
+      leversHeading: "Preventative Longevity Pillars:",
+      levers: [
+        "🥑 Unprocessed whole foods & balanced macronutrient intake",
+        "🏃 Zone 2 aerobic base + progressive resistance training",
+        "😴 7-8.5 hours of restorative sleep with consistent wake times",
+        "🔬 Annual preventative metabolic screening"
+      ]
+    },
+    uncontrolled: {
+      title: "Early Sedentary Drift & Subclinical Metabolic Strain",
+      description: "Gradual lack of activity, unmanaged chronic stress, and inflammatory dietary shifts create insidious subclinical insulin resistance and visceral adiposity over a decade.",
+      bannerClass: "uncontrolled",
+      biomarkers: {
+        a1c: { val: "5.9%", delta: "Prediabetic Drift", cls: "warn", num: 5.9 },
+        fbs: { val: "108 mg/dL", delta: "Impaired Fasting Sugar", cls: "warn", num: 108 },
+        bp: { val: "132/84", delta: "Pre-hypertensive", cls: "warn" },
+        qol: { val: "68 / 100", delta: "Accelerating Aging", cls: "warn", num: 68 }
+      },
+      prognosis: [
+        {
+          icon: "🫀",
+          iconCls: "warn",
+          pillar: "Early Arterial Stiffening",
+          stat: "Elevated Pulse Wave",
+          desc: "Loss of elastic recoil in central arteries leading to elevated systolic pressures."
+        },
+        {
+          icon: "🧬",
+          iconCls: "warn",
+          pillar: "Insulin Resistance Cascade",
+          stat: "2.5x Prediabetes Risk",
+          desc: "Hepatic lipid accumulation and beta cell hypersecretion under sustained glucose stress."
+        },
+        {
+          icon: "🧠",
+          iconCls: "warn",
+          pillar: "Mental Fatigue & Fragmentation",
+          stat: "Elevated Cortisol Burden",
+          desc: "Sympathetic nervous system overdrive impairs restorative deep and REM sleep cycles."
+        },
+        {
+          icon: "💪",
+          iconCls: "warn",
+          pillar: "Early Sarcopenia",
+          stat: "Decreasing Lean Muscle",
+          desc: "Reduced physical activity lowers resting metabolic rate and glucose clearance capacity."
+        }
+      ],
+      curvePath: "M45,98 Q180,85 320,68 T470,52",
+      curveArea: "M45,98 Q180,85 320,68 T470,52 L470,110 L45,110 Z",
+      strokeColor: "#D9822B",
+      fillColor: "rgba(217,130,43,0.18)",
+      legend: "Trajectory: Moderate Risk Escalation",
+      leversHeading: "Corrective Actions to Regain Optimal Baseline:",
+      levers: [
+        "🚶 Increase daily step count to >8,500 steps/day",
+        "🥦 Replace refined sugars and snacks with whole fiber",
+        "🧘 Implement daily 15-minute mindfulness down-regulation",
+        "📊 Continuous tracking of resting heart rate and sleep HRV"
+      ]
+    }
+  }
+};
+CLINICAL_PROGNOSTIC_MODELS.prediabetes = CLINICAL_PROGNOSTIC_MODELS.diabetes;
+
+function getStoredConditions() {
+  try {
+    const raw = localStorage.getItem(PROFILE_CONDITIONS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return {
+    prof_elisa_self: "diabetes",
+    prof_lars_father: "hypertension",
+    prof_birgitta_mother: "lipids"
+  };
+}
+
+function saveStoredCondition(profileId, condition) {
+  try {
+    const data = getStoredConditions();
+    data[profileId] = condition;
+    localStorage.setItem(PROFILE_CONDITIONS_STORAGE_KEY, JSON.stringify(data));
+  } catch (_) {}
+}
+
+function getProfileCondition(prof) {
+  if (!prof) return "diabetes";
+  const map = getStoredConditions();
+  return map[prof.id] || prof.condition || "diabetes";
+}
+
+let currentAdherenceScenario = "maintained";
+
+function setAdherenceScenario(scenario) {
+  if (scenario !== "maintained" && scenario !== "uncontrolled") return;
+  currentAdherenceScenario = scenario;
+  const prof = activeProfile();
+  renderTrajectorySimulator(prof, currentAdherenceScenario);
+}
+
 /* In-Memory Client Mock Engine for Local & Standalone Execution */
 const MOCK_STORAGE_KEY = "pulsevault_mock_profiles_v1";
 
@@ -1708,6 +2679,7 @@ const DEFAULT_MOCK_PROFILES = [
     relationship: "self",
     age: 38,
     sex: "F",
+    condition: "diabetes",
     consent_granted: true,
     completeness_pct: 95,
     upload_count: 2,
@@ -1719,6 +2691,7 @@ const DEFAULT_MOCK_PROFILES = [
     relationship: "parent",
     age: 69,
     sex: "M",
+    condition: "hypertension",
     consent_granted: true,
     completeness_pct: 90,
     upload_count: 1,
@@ -1730,6 +2703,7 @@ const DEFAULT_MOCK_PROFILES = [
     relationship: "parent",
     age: 66,
     sex: "F",
+    condition: "lipids",
     consent_granted: true,
     completeness_pct: 85,
     upload_count: 1,
@@ -1821,6 +2795,7 @@ async function apiFetch(path, options = {}) {
           relationship: payload.relationship || "other",
           age: Number(payload.age) || 30,
           sex: payload.sex || "O",
+          condition: payload.condition || "diabetes",
           consent_granted: Boolean(payload.consent_granted),
           completeness_pct: 60,
           upload_count: 0,
@@ -2002,12 +2977,177 @@ async function loadAuditLogs() {
     .join("");
 }
 
+async function selectActiveProfile(selectId) {
+  if (!selectId || selectId === state.activeProfileId) return;
+  state.activeProfileId = selectId;
+  const dropdown = document.getElementById("profileDropdown");
+  if (dropdown) dropdown.classList.add("hidden");
+  renderProfilesUI();
+  await loadActiveProfileData();
+}
+
+function renderTrajectorySimulator(prof, scenario = currentAdherenceScenario) {
+  const card = document.getElementById("trajectorySimulatorCard");
+  if (!card) return;
+
+  if (!prof) {
+    document.getElementById("trajPersonName").textContent = "No Profile Active";
+    document.getElementById("trajPersonAvatar").textContent = "—";
+    document.getElementById("trajPersonMeta").textContent = "Please select or add a profile";
+    return;
+  }
+
+  const initials = prof.name_alias
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  document.getElementById("trajPersonAvatar").textContent = initials;
+  document.getElementById("trajPersonName").textContent = prof.name_alias;
+  document.getElementById("trajPersonMeta").textContent = `${prof.relationship.toUpperCase()} · ${prof.age}y ${prof.sex}`;
+
+  const condKey = getProfileCondition(prof);
+  const condModel = CLINICAL_PROGNOSTIC_MODELS[condKey] || CLINICAL_PROGNOSTIC_MODELS.diabetes;
+  const data = condModel[scenario] || condModel.maintained;
+
+  const condBadge = document.getElementById("trajConditionBadge");
+  condBadge.textContent = condModel.name;
+  condBadge.className = `profile-condition-pill ${scenario === "maintained" ? "ok" : ""}`;
+
+  // Update adherence toggle buttons
+  const btnMaintained = document.getElementById("btnRegimenMaintained");
+  const btnUncontrolled = document.getElementById("btnRegimenUncontrolled");
+  if (btnMaintained && btnUncontrolled) {
+    btnMaintained.classList.toggle("active", scenario === "maintained");
+    btnUncontrolled.classList.toggle("active", scenario === "uncontrolled");
+    btnUncontrolled.classList.toggle("uncontrolled", scenario === "uncontrolled");
+  }
+
+  // Update scenario banner with animation
+  const banner = document.getElementById("trajScenarioBanner");
+  banner.className = `traj-scenario-banner ${data.bannerClass}`;
+  document.getElementById("trajScenarioTitle").textContent = data.title;
+  document.getElementById("trajScenarioDesc").textContent = data.description;
+  if (window.gsap) {
+    gsap.fromTo(banner, { opacity: 0.65, y: -4 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" });
+  }
+
+  // Update biomarkers
+  const a1cEl = document.getElementById("bioValA1c");
+  const fbsEl = document.getElementById("bioValFbs");
+  const bpEl = document.getElementById("bioValBp");
+  const qolEl = document.getElementById("bioValQol");
+
+  if (data.biomarkers.a1c.num !== undefined) {
+    animateNumericCounter(a1cEl, data.biomarkers.a1c.num, { decimals: 1, suffix: "%" });
+  } else {
+    a1cEl.textContent = data.biomarkers.a1c.val;
+  }
+
+  if (data.biomarkers.fbs.num !== undefined) {
+    animateNumericCounter(fbsEl, data.biomarkers.fbs.num, { decimals: 0, suffix: " mg/dL" });
+  } else {
+    fbsEl.textContent = data.biomarkers.fbs.val;
+  }
+
+  bpEl.textContent = data.biomarkers.bp.val;
+
+  if (data.biomarkers.qol.num !== undefined) {
+    animateNumericCounter(qolEl, data.biomarkers.qol.num, { decimals: 0, suffix: " / 100" });
+  } else {
+    qolEl.textContent = data.biomarkers.qol.val;
+  }
+
+  const dA1c = document.getElementById("bioDeltaA1c");
+  dA1c.textContent = data.biomarkers.a1c.delta;
+  dA1c.className = `traj-bio-delta ${data.biomarkers.a1c.cls}`;
+
+  const dFbs = document.getElementById("bioDeltaFbs");
+  dFbs.textContent = data.biomarkers.fbs.delta;
+  dFbs.className = `traj-bio-delta ${data.biomarkers.fbs.cls}`;
+
+  const dBp = document.getElementById("bioDeltaBp");
+  dBp.textContent = data.biomarkers.bp.delta;
+  dBp.className = `traj-bio-delta ${data.biomarkers.bp.cls}`;
+
+  const dQol = document.getElementById("bioDeltaQol");
+  dQol.textContent = data.biomarkers.qol.delta;
+  dQol.className = `traj-bio-delta ${data.biomarkers.qol.cls}`;
+
+  if (window.gsap) {
+    gsap.fromTo(
+      ".traj-biomarker-card",
+      { scale: 0.96, opacity: 0.75 },
+      { scale: 1, opacity: 1, duration: 0.3, stagger: 0.04, ease: "back.out(1.3)" }
+    );
+  }
+
+  // Update prognostic cards ("What could it lead to")
+  const progGrid = document.getElementById("prognosticGrid");
+  progGrid.innerHTML = data.prognosis
+    .map(
+      (p) => `
+      <div class="prognostic-card">
+        <div class="pillar-head">
+          <div class="pillar-icon ${p.iconCls}">${p.icon}</div>
+          <span>${escapeHtml(p.pillar)}</span>
+        </div>
+        <div class="pillar-stat" style="${p.iconCls === 'err' ? 'color:#A32E2E;' : p.iconCls === 'warn' ? 'color:#A25A12;' : 'color:#2B4219;'}">${escapeHtml(p.stat)}</div>
+        <p class="pillar-desc">${escapeHtml(p.desc)}</p>
+      </div>`
+    )
+    .join("");
+
+  if (window.gsap) {
+    gsap.fromTo(
+      progGrid.querySelectorAll(".prognostic-card"),
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: "power2.out" }
+    );
+  }
+
+  // Update SVG curve with GSAP morph / transition
+  const statusEl = document.getElementById("chartLegendStatus");
+  statusEl.textContent = data.legend;
+  statusEl.style.color = data.strokeColor;
+
+  const svgPath = document.getElementById("svgTrajectoryPath");
+  const svgArea = document.getElementById("svgTrajectoryArea");
+  if (svgPath && svgArea) {
+    if (window.gsap) {
+      gsap.to(svgPath, {
+        attr: { d: data.curvePath, stroke: data.strokeColor },
+        duration: 0.55,
+        ease: "power2.inOut"
+      });
+      gsap.to(svgArea, {
+        attr: { d: data.curveArea, fill: data.fillColor },
+        duration: 0.55,
+        ease: "power2.inOut"
+      });
+    } else {
+      svgPath.setAttribute("d", data.curvePath);
+      svgPath.setAttribute("stroke", data.strokeColor);
+      svgArea.setAttribute("d", data.curveArea);
+      svgArea.setAttribute("fill", data.fillColor);
+    }
+  }
+
+  // Update Levers
+  document.getElementById("trajLeversHeading").textContent = data.leversHeading;
+  document.getElementById("trajLeversRow").innerHTML = data.levers
+    .map((l) => `<span class="lever-badge">${escapeHtml(l)}</span>`)
+    .join("");
+}
+
 function renderProfilesUI() {
   const prof = activeProfile();
   document.getElementById("activeProfileLabel").textContent = prof
     ? `${prof.name_alias} · ${prof.relationship}`
     : "No Profile Active";
 
+  // Topbar dropdown
   const dropdown = document.getElementById("profileDropdown");
   if (!state.profiles.length) {
     dropdown.innerHTML = `<div class="empty-state">No profiles yet</div>`;
@@ -2023,9 +3163,26 @@ function renderProfilesUI() {
       .join("");
   }
 
+  // Quick Switch dropdown in Tab 2 Profiles
+  const selectEl = document.getElementById("profilesTabSelect");
+  if (selectEl) {
+    if (!state.profiles.length) {
+      selectEl.innerHTML = `<option value="">No profiles registered</option>`;
+    } else {
+      selectEl.innerHTML = state.profiles
+        .map((p) => {
+          const condKey = getProfileCondition(p);
+          const condName = CLINICAL_PROGNOSTIC_MODELS[condKey]?.name || "Type 2 Diabetes";
+          return `<option value="${escapeHtml(p.id)}" ${p.id === state.activeProfileId ? "selected" : ""}>${escapeHtml(p.name_alias)} (${escapeHtml(p.relationship)} · ${p.age}y ${escapeHtml(p.sex)}) — ${escapeHtml(condName)}</option>`;
+        })
+        .join("");
+      selectEl.value = state.activeProfileId || "";
+    }
+  }
+
   const listEl = document.getElementById("overviewProfilesList");
   if (!state.profiles.length) {
-    listEl.innerHTML = `<div class="empty-state">Add your first profile or click Load Sample Vault above.</div>`;
+    listEl.innerHTML = `<div class="empty-state">Add your first profile or click Load Sample Profiles above.</div>`;
   } else {
     listEl.innerHTML = state.profiles
       .map((p) => {
@@ -2064,39 +3221,48 @@ function renderProfilesUI() {
       .join("");
   }
 
-  // Family Vault Grid
+  // Profiles Grid
   document.getElementById("vaultCountHeader").textContent = String(state.profiles.length);
   const submitBtn = document.getElementById("createProfileSubmit");
-  submitBtn.disabled = state.profiles.length >= 5;
-  submitBtn.textContent = state.profiles.length >= 5 ? "Limit Reached (5/5)" : "Create Profile";
+  if (submitBtn) {
+    submitBtn.disabled = state.profiles.length >= 5;
+    submitBtn.textContent = state.profiles.length >= 5 ? "Limit Reached (5/5)" : "Add Person";
+  }
 
   const gridEl = document.getElementById("profilesGrid");
-  if (!state.profiles.length) {
-    gridEl.innerHTML = `<div class="empty-state">Create up to 5 family profiles on the right.</div>`;
-  } else {
-    gridEl.innerHTML = state.profiles
-      .map(
-        (p) => `
-        <div class="profile-vault-card ${p.id === state.activeProfileId ? "selected" : ""}">
-          <div class="card-head" style="margin-bottom:0">
-            <strong>${escapeHtml(p.name_alias)}</strong>
-            <span class="status-pill ${p.consent_granted ? "ok" : "warn"}">${p.consent_granted ? "Consent Granted" : "Consent Required"}</span>
-          </div>
-          <div class="entity-sub">${escapeHtml(p.relationship.toUpperCase())} · Age ${p.age} · ${escapeHtml(p.sex)}</div>
-          <div class="entity-sub mono-num">Completeness: ${p.completeness_pct}% · Uploads: ${p.upload_count}</div>
-          <div class="vault-card-actions">
-            <button class="chip-action-btn" data-select-prof="${escapeHtml(p.id)}" type="button">Activate</button>
-            <button class="chip-action-btn" data-toggle-consent="${escapeHtml(p.id)}" data-current="${p.consent_granted}" type="button">
-              ${p.consent_granted ? "Revoke Consent" : "Grant Consent"}
-            </button>
-            <button class="chip-action-btn" data-delete-prof="${escapeHtml(p.id)}" type="button">Remove</button>
-          </div>
-        </div>`
-      )
-      .join("");
-    animateStaggeredList(gridEl);
+  if (gridEl) {
+    if (!state.profiles.length) {
+      gridEl.innerHTML = `<div class="empty-state">No profiles found. Add a person below.</div>`;
+    } else {
+      gridEl.innerHTML = state.profiles
+        .map((p) => {
+          const condKey = getProfileCondition(p);
+          const condName = CLINICAL_PROGNOSTIC_MODELS[condKey]?.name || "Type 2 Diabetes";
+          return `
+          <div class="profile-vault-card ${p.id === state.activeProfileId ? "selected" : ""}">
+            <div class="card-head" style="margin-bottom:0">
+              <strong>${escapeHtml(p.name_alias)}</strong>
+              <span class="status-pill ${p.consent_granted ? "ok" : "warn"}">${p.consent_granted ? "Consent Granted" : "Consent Required"}</span>
+            </div>
+            <div class="entity-sub">${escapeHtml(p.relationship.toUpperCase())} · Age ${p.age} · ${escapeHtml(p.sex)}</div>
+            <div class="profile-condition-pill ${condKey === 'healthy' ? 'ok' : ''}">${escapeHtml(condName)}</div>
+            <div class="vault-card-actions">
+              <button class="chip-action-btn" data-select-prof="${escapeHtml(p.id)}" type="button">Select</button>
+              <button class="chip-action-btn" data-toggle-consent="${escapeHtml(p.id)}" data-current="${p.consent_granted}" type="button">
+                ${p.consent_granted ? "Revoke Consent" : "Grant Consent"}
+              </button>
+              <button class="chip-action-btn" data-delete-prof="${escapeHtml(p.id)}" type="button">Remove</button>
+            </div>
+          </div>`;
+        })
+        .join("");
+      animateStaggeredList(gridEl);
+    }
   }
   animateStaggeredList(listEl);
+
+  // Render Trajectory Simulator for the active profile
+  renderTrajectorySimulator(prof, currentAdherenceScenario);
 }
 
 function renderUploadsList() {
@@ -2303,6 +3469,7 @@ async function handleLoadDemoVault() {
           consent_granted: true,
         }),
       });
+      saveStoredCondition(selfProf.id, "diabetes");
       await apiFetch("/profiles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -2313,7 +3480,7 @@ async function handleLoadDemoVault() {
           sex: "M",
           consent_granted: true,
         }),
-      });
+      }).then((p) => p && saveStoredCondition(p.id, "hypertension"));
       await apiFetch("/profiles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -2324,7 +3491,7 @@ async function handleLoadDemoVault() {
           sex: "F",
           consent_granted: false,
         }),
-      });
+      }).then((p) => p && saveStoredCondition(p.id, "lipids"));
       state.activeProfileId = selfProf.id;
     }
 
@@ -2355,7 +3522,7 @@ async function handleLoadDemoVault() {
       await apiFetch("/ingest/upload", { method: "POST", body: fd });
       await loadProfiles(self.id);
     }
-    showToast("Sample Family Vault populated (3/5 profiles + normalized SI report).");
+    showToast("Sample Profiles populated (3/5 profiles + normalized report).");
   } catch (err) {
     showToast(err.message, true);
   }
@@ -2440,10 +3607,26 @@ function bindEvents() {
     }
   });
 
+  // Profiles Tab Quick Switcher & Trajectory Adherence Toggles
+  const tabSelectEl = document.getElementById("profilesTabSelect");
+  if (tabSelectEl) {
+    tabSelectEl.addEventListener("change", (e) => {
+      selectActiveProfile(e.target.value);
+    });
+  }
+
+  const btnMaint = document.getElementById("btnRegimenMaintained");
+  const btnUnctrl = document.getElementById("btnRegimenUncontrolled");
+  if (btnMaint) btnMaint.addEventListener("click", () => setAdherenceScenario("maintained"));
+  if (btnUnctrl) btnUnctrl.addEventListener("click", () => setAdherenceScenario("uncontrolled"));
+
   // Create Profile form
   document.getElementById("createProfileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
+      const condVal = document.getElementById("newProfileCondition")
+        ? document.getElementById("newProfileCondition").value
+        : "diabetes";
       const created = await apiFetch("/profiles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -2452,12 +3635,14 @@ function bindEvents() {
           relationship: document.getElementById("newProfileRel").value,
           sex: document.getElementById("newProfileSex").value,
           age: Number(document.getElementById("newProfileAge").value),
+          condition: condVal,
           consent_granted: document.getElementById("newProfileConsent").checked,
         }),
       });
+      saveStoredCondition(created.id, condVal);
       e.target.reset();
       await loadProfiles(created.id);
-      showToast(`Profile '${created.name_alias}' created.`);
+      showToast(`Profile '${created.name_alias}' added.`);
     } catch (err) {
       showToast(err.message, true);
     }
