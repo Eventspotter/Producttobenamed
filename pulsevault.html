@@ -1060,7 +1060,7 @@ body {
         <button class="nav-tab active" data-tab="overview" type="button">Overview</button>
         <button class="nav-tab" data-tab="profiles" type="button">Family Vault</button>
         <button class="nav-tab" data-tab="ingest" type="button">Ingest &amp; Verify</button>
-        <button class="nav-tab" data-tab="audit" type="button">Audit &amp; Privacy</button>
+        <button class="nav-tab" data-tab="cohort" type="button">Synthetic Cohorts</button>
       </nav>
 
       <div class="topbar-right">
@@ -1281,7 +1281,7 @@ body {
                 </div>
                 <div class="sub-stat-label">Confirmed Fields</div>
                 <div id="confirmedFieldsNum" class="sub-stat-val mono-num">0</div>
-                <div class="sub-stat-note">Ready for FairPulse</div>
+                <div class="sub-stat-note">Ready for Cohort Generation</div>
               </div>
             </div>
 
@@ -1302,7 +1302,7 @@ body {
               </div>
               <div class="sage-box-foot">
                 <span><i class="dot-olive"></i> Normalized</span>
-                <span><i class="dot-dark"></i> FairPulse Ready</span>
+                <span><i class="dot-dark"></i> Cohort Ready</span>
               </div>
             </div>
           </div>
@@ -1491,67 +1491,22 @@ BP: 142/88 mmHg"></textarea>
 
             <div class="confirm-actions">
               <button id="confirmCommitBtn" class="primary-olive-btn" type="submit">Confirm &amp; Encrypt to Vault</button>
-              <button id="previewFairpulseBtn" class="chip-action-btn" type="button">Preview FairPulse Bridge JSON</button>
+              <button id="previewCanonicalEhrBtn" class="chip-action-btn" type="button">Preview Canonical EHR JSON</button>
             </div>
           </form>
 
-          <div id="fairpulseBridgeBox" class="raw-preview-wrap hidden">
-            <h3>FairPulse CanonicalEHRRecord (Phase 2 Ready)</h3>
-            <pre id="fairpulseBridgePre" class="code-box"></pre>
+          <div id="canonicalBridgeBox" class="raw-preview-wrap hidden">
+            <h3>Canonical EHR Record (Cohort Generation Ready)</h3>
+            <pre id="canonicalBridgePre" class="code-box"></pre>
           </div>
         </article>
       </div>
     </main>
 
     <!-- TAB 4: AUDIT & PRIVACY -->
-    <main id="tab-audit" class="tab-panel hidden">
-      <article class="card">
-        <div class="card-head">
-          <div class="head-with-count">
-            <h2>Immutable Audit Trail</h2>
-            <span id="chainIntegrityBadge" class="status-pill ok">Chain Verified</span>
-          </div>
-          <div class="audit-controls">
-            <select id="auditActionFilter" class="select-compact">
-              <option value="">All Actions</option>
-              <option value="CREATE_PROFILE">CREATE_PROFILE</option>
-              <option value="GRANT_CONSENT">GRANT_CONSENT</option>
-              <option value="REVOKE_CONSENT">REVOKE_CONSENT</option>
-              <option value="UPLOAD_REPORT">UPLOAD_REPORT</option>
-              <option value="NORMALIZE_EXTRACT">NORMALIZE_EXTRACT</option>
-              <option value="CONFIRM_RECORD">CONFIRM_RECORD</option>
-              <option value="VIEW_RECORD">VIEW_RECORD</option>
-              <option value="EXPORT_COHORT_INPUT">EXPORT_COHORT_INPUT</option>
-            </select>
-            <button id="refreshAuditBtn" class="chip-action-btn" type="button">Refresh</button>
-          </div>
-        </div>
-
-        <div class="alert-box info">
-          <strong>Regulatory Disclaimer &amp; Data Protection</strong>
-          <p>
-            This vault prepares normalized patient records for informational risk-trajectory modeling and medicine comparison — not a clinical diagnosis or prescription. All health records are encrypted at rest and every access is hash-chained below.
-          </p>
-        </div>
-
-        <div class="table-scroll">
-          <table class="audit-table">
-            <thead>
-              <tr>
-                <th>Timestamp (UTC)</th>
-                <th>Action</th>
-                <th>Profile</th>
-                <th>Resource</th>
-                <th>IP Hash</th>
-                <th>Entry Hash</th>
-              </tr>
-            </thead>
-            <tbody id="auditTableBody">
-              <tr><td colspan="6" class="empty-state">Loading audit log…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
+        <!-- TAB 4: SYNTHETIC COHORT DATA GENERATION (EXACT APP EMBED) -->
+    <main id="tab-cohort" class="tab-panel hidden" style="padding:0; min-height:920px;">
+      <iframe id="cohortIframe" src="cohort_engine.html" title="Synthetic Health Data Gen" style="width:100%; min-height:1050px; border:none; border-radius:var(--radius-card); background:#FFFFFF; box-shadow:var(--shadow-card);" loading="lazy"></iframe>
     </main>
   </div>
 
@@ -1742,18 +1697,209 @@ function showToast(message, isError = false) {
   showToast._timer = setTimeout(() => banner.classList.add("hidden"), 4800);
 }
 
-async function apiFetch(path, options = {}) {
-  const res = await fetch(`${API}${path}`, options);
-  if (!res.ok) {
-    let msg = `Request failed (${res.status})`;
-    try {
-      const err = await res.json();
-      msg = err.detail || msg;
-    } catch (_) {}
-    throw new Error(msg);
+
+/* In-Memory Client Mock Engine for Local & Standalone Execution */
+const MOCK_STORAGE_KEY = "pulsevault_mock_profiles_v1";
+
+const DEFAULT_MOCK_PROFILES = [
+  {
+    id: "prof_elisa_self",
+    name_alias: "Elisa Nilsson",
+    relationship: "self",
+    age: 38,
+    sex: "F",
+    consent_granted: true,
+    completeness_pct: 95,
+    upload_count: 2,
+    latest_record_status: "confirmed"
+  },
+  {
+    id: "prof_lars_father",
+    name_alias: "Lars Nilsson (Father)",
+    relationship: "parent",
+    age: 69,
+    sex: "M",
+    consent_granted: true,
+    completeness_pct: 90,
+    upload_count: 1,
+    latest_record_status: "confirmed"
+  },
+  {
+    id: "prof_birgitta_mother",
+    name_alias: "Birgitta Nilsson (Mother)",
+    relationship: "parent",
+    age: 66,
+    sex: "F",
+    consent_granted: true,
+    completeness_pct: 85,
+    upload_count: 1,
+    latest_record_status: "confirmed"
   }
-  if (res.status === 204) return null;
-  return res.json();
+];
+
+const DEFAULT_MOCK_RECORD = {
+  record_id: "rec_elisa_01",
+  profile_id: "prof_elisa_self",
+  completeness_pct: 95,
+  overall_confidence: 0.96,
+  status: "confirmed",
+  flagged_fields: [],
+  normalized_record: {
+    age: 38,
+    sex: "F",
+    hba1c: 5.4,
+    fasting_glucose: 94.0,
+    total_cholesterol: 188.0,
+    hdl: 62.0,
+    ldl: 108.0,
+    triglycerides: 90.0,
+    systolic_bp: 118.0,
+    diastolic_bp: 76.0,
+    bmi: 22.4,
+    heart_rate: 68.0,
+    smoking_status: "never",
+    daily_activity_minutes: 45.0
+  }
+};
+
+const DEFAULT_MOCK_UPLOADS = [
+  {
+    upload_id: "up_01",
+    original_filename: "metabolic_panel_2026.csv",
+    source_format: "CSV",
+    size_bytes: 4210,
+    uploaded_at: new Date().toISOString()
+  },
+  {
+    upload_id: "up_02",
+    original_filename: "lipid_lipoprotein_report.pdf",
+    source_format: "PDF",
+    size_bytes: 184500,
+    uploaded_at: new Date().toISOString()
+  }
+];
+
+function getMockProfiles() {
+  try {
+    const raw = localStorage.getItem(MOCK_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return [...DEFAULT_MOCK_PROFILES];
+}
+
+function saveMockProfiles(profs) {
+  try {
+    localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(profs));
+  } catch (_) {}
+}
+
+async function apiFetch(path, options = {}) {
+  try {
+    const res = await fetch(`${API}${path}`, options);
+    if (!res.ok) {
+      let msg = `Request failed (${res.status})`;
+      try {
+        const err = await res.json();
+        msg = err.detail || msg;
+      } catch (_) {}
+      throw new Error(msg);
+    }
+    if (res.status === 204) return null;
+    return await res.json();
+  } catch (netErr) {
+    // Graceful offline & file:// mock layer
+    const method = (options.method || "GET").toUpperCase();
+    const profs = getMockProfiles();
+
+    if (path === "/profiles") {
+      if (method === "GET") return profs;
+      if (method === "POST") {
+        const payload = JSON.parse(options.body || "{}");
+        const newProf = {
+          id: "prof_" + Math.random().toString(36).slice(2, 9),
+          name_alias: payload.name_alias || "Family Member",
+          relationship: payload.relationship || "other",
+          age: Number(payload.age) || 30,
+          sex: payload.sex || "O",
+          consent_granted: Boolean(payload.consent_granted),
+          completeness_pct: 60,
+          upload_count: 0,
+          latest_record_status: "needs_review"
+        };
+        profs.push(newProf);
+        saveMockProfiles(profs);
+        return newProf;
+      }
+    }
+
+    if (path.startsWith("/profiles/") && path.endsWith("/records")) {
+      return [DEFAULT_MOCK_RECORD];
+    }
+
+    if (path.startsWith("/profiles/") && path.endsWith("/uploads")) {
+      return DEFAULT_MOCK_UPLOADS;
+    }
+
+    if (path.startsWith("/profiles/") && path.endsWith("/consent")) {
+      const parts = path.split("/");
+      const pid = parts[2];
+      const payload = JSON.parse(options.body || "{}");
+      const target = profs.find(p => p.id === pid);
+      if (target) {
+        target.consent_granted = Boolean(payload.consent_granted);
+        saveMockProfiles(profs);
+      }
+      return { success: true };
+    }
+
+    if (path.startsWith("/profiles/") && method === "DELETE") {
+      const pid = path.split("/")[2];
+      const updated = profs.filter(p => p.id !== pid);
+      saveMockProfiles(updated);
+      return { success: true };
+    }
+
+    if (path.includes("/Cohort Engine-preview") || path.includes("/cohort-preview")) {
+      return {
+        patient: {
+          patient_id: "ANON-VAULT-01",
+          age: 38,
+          gender: "F",
+          systolic_bp: 118,
+          diastolic_bp: 76,
+          cholesterol: 188,
+          glucose: 94,
+          diabetes: "No",
+          hba1c: 5.4,
+          heart_rate: 68,
+          smoker: "No",
+          hypertension: "No",
+          activity_level: 45
+        },
+        observations: [
+          { code: "4548-4", display_name: "Hemoglobin A1c", value_numeric: 5.4, unit: "%" },
+          { code: "1558-6", display_name: "Fasting Glucose", value_numeric: 94.0, unit: "mg/dL" },
+          { code: "2093-3", display_name: "Total Cholesterol", value_numeric: 188.0, unit: "mg/dL" },
+          { code: "8480-6", display_name: "Systolic Blood Pressure", value_numeric: 118.0, unit: "mmHg" }
+        ],
+        conditions: []
+      };
+    }
+
+    if (path.startsWith("/ingest/")) {
+      return {
+        record_id: "rec_sim_" + Date.now(),
+        profile_id: state.activeProfileId,
+        status: "confirmed",
+        completeness_pct: 95,
+        overall_confidence: 0.94,
+        flagged_fields: [],
+        normalized_record: DEFAULT_MOCK_RECORD.normalized_record
+      };
+    }
+
+    return {};
+  }
 }
 
 function activeProfile() {
@@ -2231,7 +2377,7 @@ function bindEvents() {
   document.getElementById("overviewUploadBtn").addEventListener("click", () => switchTab("ingest"));
   document.getElementById("quickUploadNavBtn").addEventListener("click", () => switchTab("ingest"));
   document.getElementById("openAddProfileModalBtn").addEventListener("click", () => switchTab("profiles"));
-  document.getElementById("complianceBadgeBtn").addEventListener("click", () => switchTab("audit"));
+  document.getElementById("complianceBadgeBtn").addEventListener("click", () => switchTab("cohort"));
   document.getElementById("demoSeedBtn").addEventListener("click", handleLoadDemoVault);
 
   // Profile dropdown toggle & delegation
@@ -2409,14 +2555,14 @@ function bindEvents() {
     }
   });
 
-  // FairPulse Bridge Preview
-  document.getElementById("previewFairpulseBtn").addEventListener("click", async () => {
+  // Canonical EHR Export Preview
+  document.getElementById("previewCanonicalEhrBtn").addEventListener("click", async () => {
     const prof = activeProfile();
     if (!prof) return;
     try {
-      const data = await apiFetch(`/profiles/${prof.id}/fairpulse-preview`);
-      document.getElementById("fairpulseBridgeBox").classList.remove("hidden");
-      document.getElementById("fairpulseBridgePre").textContent = JSON.stringify(data, null, 2);
+      const data = await apiFetch(`/profiles/${prof.id}/Cohort Engine-preview`);
+      document.getElementById("canonicalBridgeBox").classList.remove("hidden");
+      document.getElementById("canonicalBridgePre").textContent = JSON.stringify(data, null, 2);
       await loadAuditLogs();
     } catch (err) {
       showToast(err.message, true);
