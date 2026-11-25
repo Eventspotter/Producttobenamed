@@ -18,6 +18,7 @@ from core.database.session import init_db
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DASHBOARD_PATH = BASE_DIR / "pulsevault.html"
+COHORT_ENGINE_PATH = BASE_DIR / "cohort_engine.html"
 
 
 @asynccontextmanager
@@ -50,3 +51,9 @@ app.include_router(api_v1_router)
 @app.get("/", include_in_schema=False)
 async def serve_dashboard():
     return FileResponse(DASHBOARD_PATH)
+
+
+@app.get("/cohort_engine.html", include_in_schema=False)
+@app.get("/cohort", include_in_schema=False)
+async def serve_cohort_engine():
+    return FileResponse(COHORT_ENGINE_PATH)
