@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseVault — Health Ingestion &amp; Family Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg-canvas: #ECEEE9;
+  --surface-card: #FFFFFF;
+  --surface-muted: #F4F5F1;
+  --surface-sage: #D8E2CB;
+  --ink-primary: #1A1F1A;
+  --ink-secondary: #5C635B;
+  --ink-muted: #7F877D;
+  --olive-accent: #6E8A52;
+  --olive-hover: #5B7443;
+  --olive-soft: #E9EFE1;
+  --charcoal-pill: #1D231D;
+  --amber-text: #A25A12;
+  --amber-bg: #FFF3E2;
+  --red-text: #A32E2E;
+  --red-bg: #FCECEC;
+  --blue-text: #276395;
+  --blue-bg: #EAF3FC;
+  --border-subtle: rgba(26, 31, 26, 0.07);
+  --shadow-card: 0 2px 10px rgba(26, 31, 26, 0.03), 0 1px 2px rgba(26, 31, 26, 0.04);
+  --radius-card: 22px;
+  --radius-tile: 16px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+::selection { background: var(--olive-soft); color: var(--ink-primary); }
+
+:focus-visible { outline: 2px solid var(--olive-accent); outline-offset: 2px; }
+
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--ink-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono-num {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-shell {
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 22px 28px 40px;
+}
+
+/* Top Floating Navigation */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--olive-accent);
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(110, 138, 82, 0.25);
+}
+
+.profile-switcher-wrap { position: relative; }
+
+.profile-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--charcoal-pill);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 180ms var(--ease-out-expo), background 180ms ease;
+}
+
+.profile-pill-btn:hover { background: #2C342C; }
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 240px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(26, 31, 26, 0.12);
+  padding: 6px;
+  z-index: 40;
+}
+
+.profile-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  color: var(--ink-primary);
+  text-align: left;
+}
+
+.profile-dropdown-item:hover,
+.profile-dropdown-item.selected { background: var(--olive-soft); }
+
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-card);
+  padding: 5px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.nav-tab {
+  border: none;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.nav-tab:hover { color: var(--ink-primary); }
+
+.nav-tab.active {
+  background: var(--olive-accent);
+  color: #FFFFFF;
+}
+
+.utility-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface-card);
+  color: var(--ink-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 9px 15px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background 160ms ease;
+}
+
+.utility-pill-btn:hover { background: var(--olive-soft); }
+
+.icon-circle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--ink-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background 160ms ease;
+}
+
+.icon-circle-btn:hover { background: var(--olive-soft); }
+
+/* Page Header */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.page-title {
+  margin: 0 0 6px;
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.94rem;
+  max-width: 65ch;
+}
+
+.header-meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.meta-facility {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.meta-date {
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
+/* Toast Banner */
+.toast-banner {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--charcoal-pill);
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toast-banner.error { background: #8D2929; }
+
+/* Tabs & Panels */
+.hidden { display: none !important; }
+
+/* Bento Grid Top Row */
+.bento-top-row {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.bento-bottom-row {
+  display: grid;
+  grid-template-columns: 0.72fr 1.55fr 0.92fr;
+  gap: 16px;
+}
+
+.bento-left-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Shared Card Styles */
+.card {
+  background: var(--surface-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  padding: 20px 22px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-head h2,
+.card-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.head-with-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count-badge {
+  background: var(--surface-muted);
+  color: var(--ink-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.chip-muted {
+  background: var(--surface-muted);
+  color: var(--ink-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 999px;
+}
+
+.text-action-btn {
+  border: none;
+  background: transparent;
+  color: var(--olive-hover);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.text-action-btn:hover { background: var(--olive-soft); }
+
+.chip-action-btn {
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--ink-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.chip-action-btn:hover { background: var(--olive-soft); }
+
+/* Segmented Progress Track */
+.progress-block {
+  margin-bottom: 18px;
+}
+
+.progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+  margin-bottom: 8px;
+}
+
+.segmented-track {
+  position: relative;
+  height: 11px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #E6E8E2,
+    #E6E8E2 6px,
+    #F1F3EE 6px,
+    #F1F3EE 12px
+  );
+  overflow: visible;
+}
+
+.segmented-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7C995D, #5D7942);
+  transition: width 420ms var(--ease-out-expo);
+}
+
+.track-pin {
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+}
+
+.pin-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--charcoal-pill);
+  border: 2px solid #FFFFFF;
+}
+
+.track-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+}
+
+/* Mini Metric Tiles */
+.mini-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.mini-tile {
+  background: var(--surface-muted);
+  border-radius: var(--radius-tile);
+  padding: 14px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ring-icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.circular-chart {
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #DFE3DA;
+  stroke-width: 3;
+}
+
+.circle-fg {
+  fill: none;
+  stroke: var(--olive-accent);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  transition: stroke-dasharray 450ms var(--ease-out-expo);
+}
+
+.ring-center-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.tile-label {
+  font-size: 0.79rem;
+  color: var(--ink-secondary);
+  font-weight: 500;
+}
+
+.tile-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+/* Lists inside Cards */
+.entity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 255px;
+  overflow-y: auto;
+}
+
+.entity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.entity-row:hover { background: var(--surface-muted); }
+
+.entity-row.active-row { background: var(--olive-soft); }
+
+.entity-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatar-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--olive-soft);
+  color: var(--olive-hover);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.entity-meta { min-width: 0; }
+
+.entity-name {
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entity-sub {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.status-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-pill.ok  { background: var(--olive-soft); color: var(--olive-hover); }
+.status-pill.warn { background: var(--amber-bg); color: var(--amber-text); }
+.status-pill.info { background: var(--blue-bg); color: var(--blue-text); }
+.status-pill.err  { background: var(--red-bg); color: var(--red-text); }
+.status-pill.neutral { background: var(--surface-muted); color: var(--ink-secondary); }
+
+/* Bottom Left Cards */
+.confidence-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.big-stat {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.stat-caption {
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+  margin-top: 4px;
+}
+
+.legend-inline {
+  display: flex;
+  gap: 10px;
+  font-size: 0.74rem;
+  color: var(--ink-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot-olive, .dot-amber, .dot-dark {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-olive  { background: var(--olive-accent); }
+.dot-amber  { background: #D9822B; }
+.dot-dark   { background: var(--charcoal-pill); }
+
+.trend-wave-svg {
+  width: 100%;
+  height: 56px;
+  display: block;
+}
+
+.vault-bar-row,
+.vault-foot-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.79rem;
+  color: var(--ink-secondary);
+}
+
+.mini-progress-track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  margin: 8px 0 10px;
+  overflow: hidden;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  background: var(--olive-accent);
+  border-radius: 999px;
+}
+
+/* Center Analysis Card */
+.analysis-split {
+  display: grid;
+  grid-template-columns: 0.95fr 1.15fr;
+  gap: 14px;
+}
+
+.analysis-left {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sub-stat-card {
+  background: var(--surface-muted);
+  border-radius: var(--radius-tile);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sub-stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.sub-stat-icon.warn { background: var(--amber-bg); color: var(--amber-text); }
+.sub-stat-icon.ok   { background: var(--olive-soft); color: var(--olive-hover); }
+
+.sub-stat-label { font-size: 0.8rem; color: var(--ink-secondary); font-weight: 500; }
+.sub-stat-val { font-size: 1.75rem; font-weight: 700; margin: 4px 0; }
+.sub-stat-note { font-size: 0.74rem; color: var(--ink-muted); }
+
+.analysis-sage-box {
+  background: linear-gradient(160deg, #E2EBD6 0%, #CFDDC0 100%);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sage-box-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.radial-gauge-wrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  margin: 8px auto;
+}
+
+.radial-gauge-svg { width: 100%; height: 100%; }
+
+.radial-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-gauge-center div { font-size: 1.45rem; font-weight: 700; }
+.radial-gauge-center span { font-size: 0.72rem; color: var(--ink-secondary); }
+
+.sage-box-foot {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.74rem;
+  color: var(--ink-secondary);
+}
+
+/* Rich Olive Quick Ingest Card */
+.card-quick-ingest {
+  background: radial-gradient(circle at 80% 20%, rgba(162, 193, 128, 0.35), transparent 55%),
+    linear-gradient(155deg, #6F8B53 0%, #4E6539 100%);
+  color: #FFFFFF;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.card-quick-ingest h2 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; }
+.card-quick-ingest p { margin: 0 0 12px; font-size: 0.82rem; color: rgba(255,255,255,0.84); }
+
+.preset-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.glass-chip {
+  background: rgba(255,255,255,0.16);
+  color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.glass-chip:hover { background: rgba(255,255,255,0.26); }
+
+.quick-ingest-box {
+  background: #FFFFFF;
+  color: var(--ink-primary);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.quick-ingest-box textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 0.84rem;
+  color: var(--ink-primary);
+  outline: none;
+  background: transparent;
+}
+
+.quick-ingest-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.attach-file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+
+.attach-file-label:hover { background: var(--surface-muted); }
+
+.send-dark-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--charcoal-pill);
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.send-dark-btn:hover { background: #2E372E; }
+
+/* Two Column & Studio Layouts */
+.two-col-layout {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 18px;
+}
+
+.ingest-studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 18px;
+}
+
+.muted-copy { margin: 0 0 16px; color: var(--ink-secondary); font-size: 0.88rem; }
+
+.profiles-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.profile-vault-card {
+  background: var(--surface-muted);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-vault-card.selected {
+  background: var(--olive-soft);
+  border-color: var(--olive-accent);
+}
+
+.vault-card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+
+/* Forms */
+.stack-form { display: flex; flex-direction: column; gap: 12px; }
+
+.stack-form label,
+.biomarker-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.stack-form input[type="text"],
+.stack-form input[type="number"],
+.stack-form select,
+.stack-form textarea,
+.biomarker-grid input,
+.biomarker-grid select,
+.select-compact {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(26, 31, 26, 0.14);
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--ink-primary);
+  background: #FFFFFF;
+}
+
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.checkbox-card {
+  flex-direction: row !important;
+  align-items: flex-start;
+  gap: 10px !important;
+  background: var(--surface-muted);
+  padding: 11px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.checkbox-card small {
+  display: block;
+  font-weight: 400;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.primary-olive-btn {
+  background: var(--olive-accent);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 11px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.primary-olive-btn:hover { background: var(--olive-hover); }
+.primary-olive-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.dropzone-box {
+  align-items: center;
+  text-align: center;
+  border: 1.5px dashed rgba(110, 138, 82, 0.45);
+  background: var(--olive-soft);
+  padding: 20px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  color: var(--olive-hover) !important;
+}
+
+.dropzone-box span { font-weight: 400; font-size: 0.78rem; color: var(--ink-secondary); }
+
+.preset-row,
+.confirm-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.biomarker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.flagged-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+.flag-item {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--amber-bg);
+  color: var(--amber-text);
+  font-size: 0.83rem;
+}
+
+.flag-item.error { background: var(--red-bg); color: var(--red-text); }
+
+.flag-snippet {
+  margin-top: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.alert-box {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  margin-bottom: 14px;
+}
+
+.alert-box p { margin: 4px 0 0; }
+.alert-box.warn { background: var(--amber-bg); color: var(--amber-text); }
+.alert-box.info { background: var(--olive-soft); color: var(--ink-primary); }
+
+.raw-preview-wrap { margin-top: 16px; }
+.raw-preview-wrap h3 { margin: 0 0 8px; font-size: 0.88rem; }
+
+.code-box {
+  margin: 0;
+  background: #1B201B;
+  color: #DCE5D5;
+  padding: 12px;
+  border-radius: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.76rem;
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+/* Audit Table */
+.audit-controls { display: flex; gap: 8px; align-items: center; }
+.table-scroll { overflow-x: auto; }
+
+.audit-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+
+.audit-table th,
+.audit-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.audit-table th {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1120px) {
+  .bento-top-row,
+  .bento-bottom-row,
+  .two-col-layout,
+  .ingest-studio-grid { grid-template-columns: 1fr; }
+  .topbar { flex-wrap: wrap; }
+}
+
+@media (max-width: 680px) {
+  .mini-tiles-grid,
+  .analysis-split { grid-template-columns: 1fr 1fr; }
+  .page-header { flex-direction: column; align-items: flex-start; }
+  .header-meta { align-items: flex-start; text-align: left; }
+}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Floating Header -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+        </div>
+
+        <div class="profile-switcher-wrap">
+          <button id="activeProfileBtn" class="profile-pill-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+            <span id="activeProfileLabel">No Profile Active</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </button>
+          <div id="profileDropdown" class="profile-dropdown hidden" role="listbox"><div class="empty-state">No profiles yet</div></div>
+        </div>
+      </div>
+
+      <nav class="nav-pill" aria-label="Primary sections">
+        <button class="nav-tab active" data-tab="overview" type="button">Overview</button>
+        <button class="nav-tab" data-tab="profiles" type="button">Family Vault</button>
+        <button class="nav-tab" data-tab="ingest" type="button">Ingest &amp; Verify</button>
+        <button class="nav-tab" data-tab="audit" type="button">Audit &amp; Privacy</button>
+      </nav>
+
+      <div class="topbar-right">
+        <button id="demoSeedBtn" class="utility-pill-btn" type="button" title="Populate sample family profiles and lab report">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4"></path>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
+          </svg>
+          <span>Load Sample Vault</span>
+        </button>
+        <button id="complianceBadgeBtn" class="icon-circle-btn" type="button" title="Vault security and compliance status" aria-label="Vault security status">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+        </button>
+        <button id="quickUploadNavBtn" class="icon-circle-btn" type="button" title="Upload lab report" aria-label="Upload lab report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Title Header -->
+    <section class="page-header">
+      <div>
+        <h1 id="pageTitle" class="page-title">Health Data &amp; Ingestion</h1>
+        <p id="pageSubtitle" class="page-subtitle">
+          Normalize lab reports, verify flagged biomarkers, and manage family consent from one encrypted vault.
+        </p>
+      </div>
+      <div class="header-meta">
+        <div class="meta-facility">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>DPDP &amp; HIPAA Vault Active</span>
+        </div>
+        <div id="todayDateLabel" class="meta-date"></div>
+      </div>
+    </section>
+
+    <!-- Toast Banner -->
+    <div id="toastBanner" class="toast-banner hidden" role="status" aria-live="polite"></div>
+
+    <!-- TAB 1: OVERVIEW BENTO GRID -->
+    <main id="tab-overview" class="tab-panel active">
+      <div class="bento-top-row">
+        <!-- Card 1: Profile Readiness & Biomarker Overview -->
+        <article class="card card-overview">
+          <div class="card-head">
+            <h2>Profile Health Overview</h2>
+            <span id="overviewProfileBadge" class="chip-muted">No profile active</span>
+          </div>
+
+          <div class="progress-block">
+            <div class="progress-label-row">
+              <span>Schema readiness</span>
+              <span id="readinessPctLabel" class="mono-num">0%</span>
+            </div>
+            <div class="segmented-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readinessBarWrap">
+              <div id="readinessBarFill" class="segmented-fill" style="width: 0%"></div>
+              <span class="track-pin" style="left: 35%">
+                <span class="pin-dot"></span>
+              </span>
+              <span class="track-pin" style="left: 75%">
+                <span class="pin-dot"></span>
+              </span>
+            </div>
+            <div class="track-scale">
+              <span>0% Raw</span>
+              <span>35% Normalized</span>
+              <span>75% Verified</span>
+              <span>100% Cohort Ready</span>
+            </div>
+          </div>
+
+          <div class="mini-tiles-grid">
+            <div class="mini-tile">
+              <div class="ring-icon" data-ring="glycemic">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                  <path id="ringGlycemic" class="circle-fg" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                </svg>
+                <span class="ring-center-icon">A1c</span>
+              </div>
+              <div class="tile-label">Glycemic</div>
+              <div id="tileGlycemicVal" class="tile-value mono-num">—</div>
+            </div>
+
+            <div class="mini-tile">
+              <div class="ring-icon">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                  <path id="ringLipids" class="circle-fg" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                </svg>
+                <span class="ring-center-icon">LDL</span>
+              </div>
+              <div class="tile-label">Lipid Panel</div>
+              <div id="tileLipidVal" class="tile-value mono-num">—</div>
+            </div>
+
+            <div class="mini-tile">
+              <div class="ring-icon">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                  <path id="ringVitals" class="circle-fg" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                </svg>
+                <span class="ring-center-icon">BP</span>
+              </div>
+              <div class="tile-label">Blood Pressure</div>
+              <div id="tileBpVal" class="tile-value mono-num">—</div>
+            </div>
+
+            <div class="mini-tile">
+              <div class="ring-icon">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                  <path id="ringLifestyle" class="circle-fg" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                </svg>
+                <span class="ring-center-icon">BMI</span>
+              </div>
+              <div class="tile-label">BMI &amp; Habits</div>
+              <div id="tileBmiVal" class="tile-value mono-num">—</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Family Profiles (Max 5) -->
+        <article class="card card-profiles-list">
+          <div class="card-head">
+            <h2>Family Profiles</h2>
+            <button id="openAddProfileModalBtn" class="text-action-btn" type="button">+ Add (max 5)</button>
+          </div>
+          <div id="overviewProfilesList" class="entity-list"><div class="empty-state">Add your first profile or click Load Sample Vault above.</div></div>
+        </article>
+
+        <!-- Card 3: Uploaded Lab Reports -->
+        <article class="card card-uploads-list">
+          <div class="card-head">
+            <div class="head-with-count">
+              <h2>Lab Reports</h2>
+              <span id="uploadCountBadge" class="count-badge mono-num">0</span>
+            </div>
+            <button id="overviewUploadBtn" class="text-action-btn" type="button">+ Upload new</button>
+          </div>
+          <div id="overviewUploadsList" class="entity-list"></div>
+        </article>
+      </div>
+
+      <div class="bento-bottom-row">
+        <!-- Bottom Left Column -->
+        <div class="bento-left-stack">
+          <article class="card card-confidence">
+            <div class="confidence-top">
+              <div>
+                <div id="confidenceBigNum" class="big-stat mono-num">—%</div>
+                <div class="stat-caption">Extraction confidence</div>
+              </div>
+              <div class="legend-inline">
+                <span class="legend-item"><i class="dot-olive"></i> Verified</span>
+                <span class="legend-item"><i class="dot-amber"></i> Flagged</span>
+              </div>
+            </div>
+            <svg class="trend-wave-svg" viewBox="0 0 240 62" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0,40 Q30,38 55,28 T115,18 T175,32 T240,22 L240,40 L0,40 Z" fill="rgba(110,138,82,0.22)"></path>
+              <path d="M0,40 Q40,48 80,44 T160,52 T240,42 L240,40 L0,40 Z" fill="rgba(217,130,43,0.16)"></path>
+              <path d="M0,40 Q30,38 55,28 T115,18 T175,32 T240,22" fill="none" stroke="#6E8A52" stroke-width="2"></path>
+            </svg>
+          </article>
+
+          <article class="card card-vault-info">
+            <div class="card-head">
+              <h3>Vault Protection</h3>
+              <span class="chip-muted">AES + SHA-256</span>
+            </div>
+            <div class="vault-bar-row">
+              <span>Encrypted Storage</span>
+              <span class="mono-num">100%</span>
+            </div>
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" style="width: 100%"></div>
+            </div>
+            <div class="vault-foot-row">
+              <span>Raw TTL: 30 days</span>
+              <span id="auditCountFoot" class="mono-num">0 audit events</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Bottom Center: Normalized Biomarker Analysis -->
+        <article class="card card-analysis">
+          <div class="card-head">
+            <h2>Normalization &amp; Verification</h2>
+            <button id="goToVerifyBtn" class="chip-action-btn" type="button">Open Studio</button>
+          </div>
+          <div class="analysis-split">
+            <div class="analysis-left">
+              <div class="sub-stat-card">
+                <div class="sub-stat-icon warn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  </svg>
+                </div>
+                <div class="sub-stat-label">Flagged Fields</div>
+                <div id="flaggedCountNum" class="sub-stat-val mono-num">0</div>
+                <div class="sub-stat-note">Require human review</div>
+              </div>
+
+              <div class="sub-stat-card">
+                <div class="sub-stat-icon ok">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <path d="m9 11 3 3L22 4"></path>
+                  </svg>
+                </div>
+                <div class="sub-stat-label">Confirmed Fields</div>
+                <div id="confirmedFieldsNum" class="sub-stat-val mono-num">0</div>
+                <div class="sub-stat-note">Ready for FairPulse</div>
+              </div>
+            </div>
+
+            <div class="analysis-sage-box">
+              <div class="sage-box-head">
+                <span>Cohort Pipeline Readiness</span>
+                <span id="recordStatusChip" class="status-pill neutral">No Record</span>
+              </div>
+              <div class="radial-gauge-wrap">
+                <svg viewBox="0 0 140 140" class="radial-gauge-svg">
+                  <circle cx="70" cy="70" r="52" fill="none" stroke="rgba(29,35,29,0.1)" stroke-width="16"></circle>
+                  <circle id="cohortGaugeArc" cx="70" cy="70" r="52" fill="none" stroke="#56723B" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 327" transform="rotate(-90 70 70)"></circle>
+                </svg>
+                <div class="radial-gauge-center">
+                  <div id="gaugeBigPct" class="mono-num">0%</div>
+                  <span>Normalized</span>
+                </div>
+              </div>
+              <div class="sage-box-foot">
+                <span><i class="dot-olive"></i> Normalized</span>
+                <span><i class="dot-dark"></i> FairPulse Ready</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Bottom Right: Atmospheric Olive Quick Ingest Card -->
+        <article class="card card-quick-ingest">
+          <div class="quick-ingest-top">
+            <h2>Quick Lab Ingest</h2>
+            <p>Drop a CSV, PDF, or scanned report image to normalize units and flag ambiguities.</p>
+            <div class="preset-chips">
+              <button id="sampleCleanBtn" class="glass-chip" type="button">Try Clean Lipid CSV</button>
+              <button id="sampleMessyBtn" class="glass-chip" type="button">Try Garbled OCR Text</button>
+            </div>
+          </div>
+
+          <div class="quick-ingest-box">
+            <textarea id="quickPasteInput" rows="3" placeholder="Paste lab text (e.g. HbA1c: 6.4%, BP: 132/84 mmHg, FBS: 6.8 mmol/L) or attach file..."></textarea>
+            <div class="quick-ingest-actions">
+              <label class="attach-file-label">
+                <input id="quickFileInput" type="file" accept=".pdf,.csv,.png,.jpg,.jpeg,.txt" hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                </svg>
+                <span id="quickFileLabel">Attach PDF/CSV/Img</span>
+              </label>
+              <button id="quickParseBtn" class="send-dark-btn" type="button" title="Parse &amp; Normalize">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M5 12h14m-7-7 7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <!-- TAB 2: FAMILY VAULT (5-PROFILE + CONSENT MANAGER) -->
+    <main id="tab-profiles" class="tab-panel hidden">
+      <div class="two-col-layout">
+        <article class="card">
+          <div class="card-head">
+            <h2>Linked Family Profiles (<span id="vaultCountHeader">0</span> / 5)</h2>
+            <span class="chip-muted">DPDP Act Consent Gate</span>
+          </div>
+          <p class="muted-copy">
+            Each account owner can manage up to 5 profiles. Non-self profiles require explicit recorded consent before health reports can be uploaded or processed.
+          </p>
+          <div id="profilesGrid" class="profiles-cards-grid"><div class="empty-state">Create up to 5 family profiles on the right.</div></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h2>Add Linked Profile</h2>
+          </div>
+          <form id="createProfileForm" class="stack-form">
+            <label>
+              <span>Name / Alias</span>
+              <input id="newProfileAlias" type="text" required maxlength="80" placeholder="e.g. Meera (Mother)">
+            </label>
+            <div class="form-row-2">
+              <label>
+                <span>Relationship</span>
+                <select id="newProfileRel">
+                  <option value="self">Self</option>
+                  <option value="parent">Parent</option>
+                  <option value="spouse">Spouse</option>
+                  <option value="child">Child</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+              <label>
+                <span>Biological Sex</span>
+                <select id="newProfileSex">
+                  <option value="M">Male (M)</option>
+                  <option value="F">Female (F)</option>
+                  <option value="O">Other (O)</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Age (Years)</span>
+              <input id="newProfileAge" type="number" min="0" max="120" required value="34">
+            </label>
+            <label class="checkbox-card">
+              <input id="newProfileConsent" type="checkbox">
+              <span>
+                <strong>DPDP / HIPAA Consent Verified</strong>
+                <small>I confirm I hold explicit informed consent from this individual to store and normalize their medical reports.</small>
+              </span>
+            </label>
+            <button id="createProfileSubmit" class="primary-olive-btn" type="submit">Create Profile</button>
+          </form>
+        </article>
+      </div>
+    </main>
+
+    <!-- TAB 3: INGEST & VERIFY STUDIO -->
+    <main id="tab-ingest" class="tab-panel hidden">
+      <div class="ingest-studio-grid">
+        <article class="card">
+          <div class="card-head">
+            <h2>Upload &amp; Parse Report</h2>
+            <span id="studioTargetProfile" class="chip-muted">No profile active</span>
+          </div>
+
+          <div id="consentBlockNotice" class="alert-box warn hidden">
+            <strong>Upload Blocked — Consent Required</strong>
+            <p>This profile is non-self and does not have recorded consent. Grant consent in Family Vault before uploading.</p>
+          </div>
+
+          <form id="studioUploadForm" class="stack-form">
+            <label class="dropzone-box">
+              <input id="studioFileInput" type="file" accept=".pdf,.csv,.png,.jpg,.jpeg,.txt" hidden>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <strong id="studioFileTitle">Drop PDF, CSV, or Image Report</strong>
+              <span>Raw file encrypted at rest (Fernet AES-128) with 30-day auto-expiry</span>
+            </label>
+
+            <label>
+              <span>Or paste raw lab report text</span>
+              <textarea id="studioRawText" rows="5" placeholder="Patient Age: 54
+Sex: M
+HbA1c: 7.1 %
+Fasting Glucose: 7.4 mmol/L
+Total Cholesterol: 218 mg/dL
+BP: 142/88 mmHg"></textarea>
+            </label>
+
+            <div class="preset-row">
+              <button id="studioPresetSI" class="chip-action-btn" type="button">Load SI (mmol/L) Report</button>
+              <button id="studioPresetGarbled" class="chip-action-btn" type="button">Load Garbled / Inverted Report</button>
+            </div>
+
+            <button id="studioParseBtn" class="primary-olive-btn" type="submit" disabled>Extract &amp; Normalize</button>
+          </form>
+
+          <div id="rawPreviewWrap" class="raw-preview-wrap hidden">
+            <h3>PII-Redacted Raw Text Preview</h3>
+            <pre id="rawPreviewPre" class="code-box"></pre>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h2>Human-in-the-Loop Verification</h2>
+            <span id="studioRecordBadge" class="status-pill neutral">Awaiting upload</span>
+          </div>
+
+          <div id="flaggedFieldsList" class="flagged-list"><div class="empty-state">Upload or paste a lab report on the left to inspect extracted fields.</div></div>
+
+          <form id="confirmBiomarkersForm" class="biomarker-form">
+            <div class="biomarker-grid">
+              <label><span>Age (yrs)</span><input name="age" type="number" min="0" max="120"></label>
+              <label><span>Sex</span>
+                <select name="sex">
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                  <option value="O">O</option>
+                </select>
+              </label>
+              <label><span>HbA1c (%)</span><input name="hba1c" type="number" step="0.1" min="3" max="20"></label>
+              <label><span>Fasting Glucose (mg/dL)</span><input name="fasting_glucose" type="number" step="0.1"></label>
+              <label><span>Total Cholesterol (mg/dL)</span><input name="total_cholesterol" type="number" step="0.1"></label>
+              <label><span>HDL (mg/dL)</span><input name="hdl" type="number" step="0.1"></label>
+              <label><span>LDL (mg/dL)</span><input name="ldl" type="number" step="0.1"></label>
+              <label><span>Triglycerides (mg/dL)</span><input name="triglycerides" type="number" step="0.1"></label>
+              <label><span>Systolic BP (mmHg)</span><input name="systolic_bp" type="number" step="1"></label>
+              <label><span>Diastolic BP (mmHg)</span><input name="diastolic_bp" type="number" step="1"></label>
+              <label><span>BMI (kg/m²)</span><input name="bmi" type="number" step="0.1"></label>
+              <label><span>Heart Rate (bpm)</span><input name="heart_rate" type="number" step="1"></label>
+              <label><span>Smoking Status</span>
+                <select name="smoking_status">
+                  <option value="">Unknown</option>
+                  <option value="never">Never</option>
+                  <option value="former">Former</option>
+                  <option value="active">Active</option>
+                </select>
+              </label>
+              <label><span>Daily Activity (min)</span><input name="daily_activity_minutes" type="number" min="0" max="600"></label>
+            </div>
+
+            <div class="confirm-actions">
+              <button id="confirmCommitBtn" class="primary-olive-btn" type="submit">Confirm &amp; Encrypt to Vault</button>
+              <button id="previewFairpulseBtn" class="chip-action-btn" type="button">Preview FairPulse Bridge JSON</button>
+            </div>
+          </form>
+
+          <div id="fairpulseBridgeBox" class="raw-preview-wrap hidden">
+            <h3>FairPulse CanonicalEHRRecord (Phase 2 Ready)</h3>
+            <pre id="fairpulseBridgePre" class="code-box"></pre>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <!-- TAB 4: AUDIT & PRIVACY -->
+    <main id="tab-audit" class="tab-panel hidden">
+      <article class="card">
+        <div class="card-head">
+          <div class="head-with-count">
+            <h2>Immutable Audit Trail</h2>
+            <span id="chainIntegrityBadge" class="status-pill ok">Chain Verified</span>
+          </div>
+          <div class="audit-controls">
+            <select id="auditActionFilter" class="select-compact">
+              <option value="">All Actions</option>
+              <option value="CREATE_PROFILE">CREATE_PROFILE</option>
+              <option value="GRANT_CONSENT">GRANT_CONSENT</option>
+              <option value="REVOKE_CONSENT">REVOKE_CONSENT</option>
+              <option value="UPLOAD_REPORT">UPLOAD_REPORT</option>
+              <option value="NORMALIZE_EXTRACT">NORMALIZE_EXTRACT</option>
+              <option value="CONFIRM_RECORD">CONFIRM_RECORD</option>
+              <option value="VIEW_RECORD">VIEW_RECORD</option>
+              <option value="EXPORT_COHORT_INPUT">EXPORT_COHORT_INPUT</option>
+            </select>
+            <button id="refreshAuditBtn" class="chip-action-btn" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div class="alert-box info">
+          <strong>Regulatory Disclaimer &amp; Data Protection</strong>
+          <p>
+            This vault prepares normalized patient records for informational risk-trajectory modeling and medicine comparison — not a clinical diagnosis or prescription. All health records are encrypted at rest and every access is hash-chained below.
+          </p>
+        </div>
+
+        <div class="table-scroll">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th>Timestamp (UTC)</th>
+                <th>Action</th>
+                <th>Profile</th>
+                <th>Resource</th>
+                <th>IP Hash</th>
+                <th>Entry Hash</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr><td colspan="6" class="empty-state">Loading audit log…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <script>
+/* PulseVault — Phase 1 Client Orchestrator */
+
+const state = {
+  profiles: [],
+  activeProfileId: null,
+  records: [],
+  uploads: [],
+  currentRecord: null,
+  auditLogs: [],
+  auditChainVerified: true,
+};
+
+const API = "/api/v1";
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function showToast(message, isError = false) {
+  const banner = document.getElementById("toastBanner");
+  banner.textContent = message;
+  banner.classList.toggle("error", isError);
+  banner.classList.remove("hidden");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => banner.classList.add("hidden"), 4800);
+}
+
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${API}${path}`, options);
+  if (!res.ok) {
+    let msg = `Request failed (${res.status})`;
+    try {
+      const err = await res.json();
+      msg = err.detail || msg;
+    } catch (_) {}
+    throw new Error(msg);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function activeProfile() {
+  return state.profiles.find((p) => p.id === state.activeProfileId) || null;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll(".nav-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    const isTarget = panel.id === `tab-${tabName}`;
+    panel.classList.toggle("active", isTarget);
+    panel.classList.toggle("hidden", !isTarget);
+  });
+
+  if (tabName === "audit") {
+    loadAuditLogs();
+  }
+}
+
+async function loadProfiles(selectId = null) {
+  state.profiles = await apiFetch("/profiles");
+  if (selectId && state.profiles.some((p) => p.id === selectId)) {
+    state.activeProfileId = selectId;
+  } else if (!state.activeProfileId || !state.profiles.some((p) => p.id === state.activeProfileId)) {
+    state.activeProfileId = state.profiles[0]?.id || null;
+  }
+  renderProfilesUI();
+  await loadActiveProfileData();
+}
+
+async function loadActiveProfileData() {
+  const prof = activeProfile();
+  if (!prof) {
+    state.records = [];
+    state.uploads = [];
+    state.currentRecord = null;
+    renderOverviewMetrics();
+    renderStudio();
+    return;
+  }
+
+  const [records, uploads] = await Promise.all([
+    apiFetch(`/profiles/${prof.id}/records`),
+    apiFetch(`/profiles/${prof.id}/uploads`),
+  ]);
+  state.records = records;
+  state.uploads = uploads;
+  state.currentRecord = records[0] || null;
+
+  renderOverviewMetrics();
+  renderUploadsList();
+  renderStudio();
+  await loadAuditLogs();
+}
+
+async function loadAuditLogs() {
+  const actionFilter = document.getElementById("auditActionFilter").value;
+  const query = actionFilter ? `?action=${encodeURIComponent(actionFilter)}` : "";
+  const data = await apiFetch(`/audit/logs${query}`);
+  state.auditLogs = data.entries || [];
+  state.auditChainVerified = Boolean(data.chain_verified);
+  document.getElementById("auditCountFoot").textContent = `${data.total} audit events`;
+
+  const badge = document.getElementById("chainIntegrityBadge");
+  badge.textContent = state.auditChainVerified ? "Chain Verified" : "Chain Tampered";
+  badge.className = `status-pill ${state.auditChainVerified ? "ok" : "err"}`;
+
+  const tbody = document.getElementById("auditTableBody");
+  if (!state.auditLogs.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No audit events recorded yet.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = state.auditLogs
+    .map(
+      (e) => `
+      <tr>
+        <td class="mono-num">${escapeHtml(new Date(e.timestamp).toISOString().replace("T", " ").slice(0, 19))}</td>
+        <td><span class="status-pill info">${escapeHtml(e.action)}</span></td>
+        <td class="mono-num">${escapeHtml(e.profile_id ? e.profile_id.slice(0, 12) : "—")}</td>
+        <td>${escapeHtml(e.resource_type)}</td>
+        <td class="mono-num">${escapeHtml(e.ip_hash.slice(0, 10))}…</td>
+        <td class="mono-num">${escapeHtml(e.entry_hash.slice(0, 14))}…</td>
+      </tr>`
+    )
+    .join("");
+}
+
+function renderProfilesUI() {
+  const prof = activeProfile();
+  document.getElementById("activeProfileLabel").textContent = prof
+    ? `${prof.name_alias} · ${prof.relationship}`
+    : "No Profile Active";
+
+  const dropdown = document.getElementById("profileDropdown");
+  if (!state.profiles.length) {
+    dropdown.innerHTML = `<div class="empty-state">No profiles yet</div>`;
+  } else {
+    dropdown.innerHTML = state.profiles
+      .map(
+        (p) => `
+        <button class="profile-dropdown-item ${p.id === state.activeProfileId ? "selected" : ""}" data-select-prof="${escapeHtml(p.id)}" type="button">
+          <span><strong>${escapeHtml(p.name_alias)}</strong> (${escapeHtml(p.relationship)})</span>
+          <span class="status-pill ${p.consent_granted ? "ok" : "warn"}">${p.consent_granted ? "Consented" : "Pending"}</span>
+        </button>`
+      )
+      .join("");
+  }
+
+  const listEl = document.getElementById("overviewProfilesList");
+  if (!state.profiles.length) {
+    listEl.innerHTML = `<div class="empty-state">Add your first profile or click Load Sample Vault above.</div>`;
+  } else {
+    listEl.innerHTML = state.profiles
+      .map((p) => {
+        const initials = p.name_alias
+          .split(/\s+/)
+          .map((w) => w[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
+        const badgeCls = !p.consent_granted
+          ? "warn"
+          : p.latest_record_status === "confirmed"
+          ? "ok"
+          : p.latest_record_status === "needs_review"
+          ? "info"
+          : "neutral";
+        const badgeLabel = !p.consent_granted
+          ? "Consent Needed"
+          : p.latest_record_status === "confirmed"
+          ? "Verified"
+          : p.latest_record_status === "needs_review"
+          ? "Review Flagged"
+          : "Consented";
+        return `
+        <div class="entity-row ${p.id === state.activeProfileId ? "active-row" : ""}" data-select-prof="${escapeHtml(p.id)}">
+          <div class="entity-left">
+            <div class="avatar-circle">${escapeHtml(initials)}</div>
+            <div class="entity-meta">
+              <div class="entity-name">${escapeHtml(p.name_alias)}</div>
+              <div class="entity-sub">${escapeHtml(p.relationship)} · ${p.age}y ${escapeHtml(p.sex)}</div>
+            </div>
+          </div>
+          <span class="status-pill ${badgeCls}">${badgeLabel}</span>
+        </div>`;
+      })
+      .join("");
+  }
+
+  // Family Vault Grid
+  document.getElementById("vaultCountHeader").textContent = String(state.profiles.length);
+  const submitBtn = document.getElementById("createProfileSubmit");
+  submitBtn.disabled = state.profiles.length >= 5;
+  submitBtn.textContent = state.profiles.length >= 5 ? "Limit Reached (5/5)" : "Create Profile";
+
+  const gridEl = document.getElementById("profilesGrid");
+  if (!state.profiles.length) {
+    gridEl.innerHTML = `<div class="empty-state">Create up to 5 family profiles on the right.</div>`;
+  } else {
+    gridEl.innerHTML = state.profiles
+      .map(
+        (p) => `
+        <div class="profile-vault-card ${p.id === state.activeProfileId ? "selected" : ""}">
+          <div class="card-head" style="margin-bottom:0">
+            <strong>${escapeHtml(p.name_alias)}</strong>
+            <span class="status-pill ${p.consent_granted ? "ok" : "warn"}">${p.consent_granted ? "Consent Granted" : "Consent Required"}</span>
+          </div>
+          <div class="entity-sub">${escapeHtml(p.relationship.toUpperCase())} · Age ${p.age} · ${escapeHtml(p.sex)}</div>
+          <div class="entity-sub mono-num">Completeness: ${p.completeness_pct}% · Uploads: ${p.upload_count}</div>
+          <div class="vault-card-actions">
+            <button class="chip-action-btn" data-select-prof="${escapeHtml(p.id)}" type="button">Activate</button>
+            <button class="chip-action-btn" data-toggle-consent="${escapeHtml(p.id)}" data-current="${p.consent_granted}" type="button">
+              ${p.consent_granted ? "Revoke Consent" : "Grant Consent"}
+            </button>
+            <button class="chip-action-btn" data-delete-prof="${escapeHtml(p.id)}" type="button">Remove</button>
+          </div>
+        </div>`
+      )
+      .join("");
+  }
+}
+
+function renderUploadsList() {
+  const listEl = document.getElementById("overviewUploadsList");
+  document.getElementById("uploadCountBadge").textContent = String(state.uploads.length);
+
+  if (!state.uploads.length) {
+    listEl.innerHTML = `<div class="empty-state">No lab reports uploaded for this profile yet.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = state.uploads
+    .map(
+      (u) => `
+      <div class="entity-row" data-open-ingest="1">
+        <div class="entity-left">
+          <div class="avatar-circle">${escapeHtml(u.source_format.slice(0, 3))}</div>
+          <div class="entity-meta">
+            <div class="entity-name">${escapeHtml(u.original_filename)}</div>
+            <div class="entity-sub mono-num">${(u.size_bytes / 1024).toFixed(1)} KB · AES Encrypted</div>
+          </div>
+        </div>
+        <span class="status-pill ok">SHA Verified</span>
+      </div>`
+    )
+    .join("");
+}
+
+function renderOverviewMetrics() {
+  const prof = activeProfile();
+  const rec = state.currentRecord;
+  const nr = rec?.normalized_record;
+
+  document.getElementById("overviewProfileBadge").textContent = prof
+    ? `${prof.name_alias} (${prof.relationship})`
+    : "No profile active";
+
+  const pct = rec ? rec.completeness_pct : 0;
+  document.getElementById("readinessPctLabel").textContent = `${pct}%`;
+  document.getElementById("readinessBarFill").style.width = `${pct}%`;
+  document.getElementById("readinessBarWrap").setAttribute("aria-valuenow", String(pct));
+
+  const setTile = (ringId, valId, valueText, fillPct) => {
+    const ring = document.getElementById(ringId);
+    if (ring) ring.setAttribute("stroke-dasharray", `${fillPct}, 100`);
+    const val = document.getElementById(valId);
+    if (val) val.textContent = valueText;
+  };
+
+  if (nr) {
+    const a1c = nr.hba1c != null ? `${nr.hba1c}%` : "—";
+    const ldl = nr.ldl != null ? `${nr.ldl} mg/dL` : nr.total_cholesterol != null ? `${nr.total_cholesterol}` : "—";
+    const bp = nr.systolic_bp != null && nr.diastolic_bp != null ? `${Math.round(nr.systolic_bp)}/${Math.round(nr.diastolic_bp)}` : "—";
+    const bmi = nr.bmi != null ? `${nr.bmi}` : "—";
+
+    setTile("ringGlycemic", "tileGlycemicVal", a1c, nr.hba1c != null ? 92 : nr.fasting_glucose != null ? 55 : 10);
+    setTile("ringLipids", "tileLipidVal", ldl, nr.total_cholesterol != null ? 90 : 10);
+    setTile("ringVitals", "tileBpVal", bp, nr.systolic_bp != null ? 95 : 10);
+    setTile("ringLifestyle", "tileBmiVal", bmi, nr.bmi != null ? 88 : 15);
+  } else {
+    setTile("ringGlycemic", "tileGlycemicVal", "—", 0);
+    setTile("ringLipids", "tileLipidVal", "—", 0);
+    setTile("ringVitals", "tileBpVal", "—", 0);
+    setTile("ringLifestyle", "tileBmiVal", "—", 0);
+  }
+
+  const confPct = rec ? Math.round(rec.overall_confidence * 100) : 0;
+  document.getElementById("confidenceBigNum").textContent = rec ? `${confPct}%` : "—%";
+
+  const flagCount = rec?.flagged_fields?.length || 0;
+  const confirmedCount = nr
+    ? ["age", "sex", "hba1c", "fasting_glucose", "total_cholesterol", "hdl", "ldl", "triglycerides", "systolic_bp", "diastolic_bp", "bmi", "smoking_status"].filter(
+        (f) => nr[f] !== null && nr[f] !== undefined
+      ).length
+    : 0;
+
+  document.getElementById("flaggedCountNum").textContent = String(flagCount);
+  document.getElementById("confirmedFieldsNum").textContent = String(confirmedCount);
+  document.getElementById("gaugeBigPct").textContent = `${pct}%`;
+
+  const arcLen = Math.round((pct / 100) * 327);
+  document.getElementById("cohortGaugeArc").setAttribute("stroke-dasharray", `${arcLen} 327`);
+
+  const statusChip = document.getElementById("recordStatusChip");
+  if (!rec) {
+    statusChip.textContent = "No Record";
+    statusChip.className = "status-pill neutral";
+  } else if (rec.status === "confirmed") {
+    statusChip.textContent = "Confirmed";
+    statusChip.className = "status-pill ok";
+  } else {
+    statusChip.textContent = "Needs Review";
+    statusChip.className = "status-pill warn";
+  }
+}
+
+function renderStudio() {
+  const prof = activeProfile();
+  const targetBadge = document.getElementById("studioTargetProfile");
+  const consentNotice = document.getElementById("consentBlockNotice");
+  const parseBtn = document.getElementById("studioParseBtn");
+
+  if (!prof) {
+    targetBadge.textContent = "No profile active";
+    consentNotice.classList.add("hidden");
+    parseBtn.disabled = true;
+  } else {
+    targetBadge.textContent = `${prof.name_alias} (${prof.relationship})`;
+    const blocked = prof.relationship !== "self" && !prof.consent_granted;
+    consentNotice.classList.toggle("hidden", !blocked);
+    parseBtn.disabled = blocked;
+  }
+
+  const rec = state.currentRecord;
+  const statusBadge = document.getElementById("studioRecordBadge");
+  const flagsEl = document.getElementById("flaggedFieldsList");
+  const form = document.getElementById("confirmBiomarkersForm");
+
+  if (!rec) {
+    statusBadge.textContent = "Awaiting upload";
+    statusBadge.className = "status-pill neutral";
+    flagsEl.innerHTML = `<div class="empty-state">Upload or paste a lab report on the left to inspect extracted fields.</div>`;
+    form.reset();
+    return;
+  }
+
+  statusBadge.textContent = rec.status === "confirmed" ? "Confirmed & Encrypted" : `${rec.flagged_fields.length} Flagged`;
+  statusBadge.className = `status-pill ${rec.status === "confirmed" ? "ok" : "warn"}`;
+
+  if (rec.flagged_fields.length) {
+    flagsEl.innerHTML = rec.flagged_fields
+      .map(
+        (f) => `
+        <div class="flag-item ${f.severity === "error" ? "error" : ""}">
+          <strong>${escapeHtml(f.field_name)}</strong> (${Math.round(f.confidence * 100)}% conf) — ${escapeHtml(f.reason)}
+          ${f.suggested_range ? `<div>Suggested range: <strong>${escapeHtml(f.suggested_range)}</strong></div>` : ""}
+          ${f.raw_snippet ? `<div class="flag-snippet">Source snippet: ${escapeHtml(f.raw_snippet)}</div>` : ""}
+        </div>`
+      )
+      .join("");
+  } else {
+    flagsEl.innerHTML = `<div class="alert-box info">All biomarkers extracted cleanly and confirmed in vault.</div>`;
+  }
+
+  const nr = rec.normalized_record;
+  for (const field of form.elements) {
+    if (!field.name) continue;
+    const val = nr[field.name];
+    field.value = val !== null && val !== undefined ? String(val) : "";
+  }
+}
+
+async function submitIngestion({ file = null, rawText = null }) {
+  const prof = activeProfile();
+  if (!prof) {
+    showToast("Create or select a profile first.", true);
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("profile_id", prof.id);
+  if (file) {
+    fd.append("file", file);
+  } else if (rawText) {
+    fd.append("raw_text", rawText);
+  } else {
+    showToast("Attach a report file or paste lab report text.", true);
+    return;
+  }
+
+  const extraction = await apiFetch("/ingest/upload", { method: "POST", body: fd });
+  document.getElementById("rawPreviewWrap").classList.remove("hidden");
+  document.getElementById("rawPreviewPre").textContent = extraction.raw_text_preview || "(Binary/empty text)";
+
+  await loadActiveProfileData();
+  if (extraction.requires_user_confirmation) {
+    showToast(`Extracted with ${extraction.flagged_fields.length} flagged field(s) — please review in Verification Studio.`);
+    switchTab("ingest");
+  } else {
+    showToast("Report parsed, normalized, and encrypted cleanly.");
+  }
+}
+
+async function handleLoadDemoVault() {
+  try {
+    if (state.profiles.length === 0) {
+      const selfProf = await apiFetch("/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name_alias: "Elisa Nilsson",
+          relationship: "self",
+          age: 38,
+          sex: "F",
+          consent_granted: true,
+        }),
+      });
+      await apiFetch("/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name_alias: "Rajesh Nilsson",
+          relationship: "parent",
+          age: 64,
+          sex: "M",
+          consent_granted: true,
+        }),
+      });
+      await apiFetch("/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name_alias: "Maya Nilsson",
+          relationship: "spouse",
+          age: 36,
+          sex: "F",
+          consent_granted: false,
+        }),
+      });
+      state.activeProfileId = selfProf.id;
+    }
+
+    await loadProfiles();
+    const self = state.profiles[0];
+    if (self && state.uploads.length === 0) {
+      const fd = new FormData();
+      fd.append("profile_id", self.id);
+      fd.append(
+        "raw_text",
+        [
+          "Patient Name: Elisa Nilsson",
+          "Age: 38",
+          "Sex: F",
+          "HbA1c: 5.9 %",
+          "Fasting Glucose: 5.7 mmol/L",
+          "Total Cholesterol: 5.1 mmol/L",
+          "HDL: 56 mg/dL",
+          "LDL: 118 mg/dL",
+          "Triglycerides: 138 mg/dL",
+          "BP: 122/78 mmHg",
+          "Heart Rate: 72 bpm",
+          "BMI: 23.4",
+          "Smoking: never",
+          "Daily Activity: 40 min",
+        ].join("\n")
+      );
+      await apiFetch("/ingest/upload", { method: "POST", body: fd });
+      await loadProfiles(self.id);
+    }
+    showToast("Sample Family Vault populated (3/5 profiles + normalized SI report).");
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+function bindEvents() {
+  document.getElementById("todayDateLabel").textContent = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  // Tab navigation
+  document.querySelectorAll(".nav-tab").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+  });
+  document.getElementById("goToVerifyBtn").addEventListener("click", () => switchTab("ingest"));
+  document.getElementById("overviewUploadBtn").addEventListener("click", () => switchTab("ingest"));
+  document.getElementById("quickUploadNavBtn").addEventListener("click", () => switchTab("ingest"));
+  document.getElementById("openAddProfileModalBtn").addEventListener("click", () => switchTab("profiles"));
+  document.getElementById("complianceBadgeBtn").addEventListener("click", () => switchTab("audit"));
+  document.getElementById("demoSeedBtn").addEventListener("click", handleLoadDemoVault);
+
+  // Profile dropdown toggle & delegation
+  const dropdown = document.getElementById("profileDropdown");
+  const profileBtn = document.getElementById("activeProfileBtn");
+  profileBtn.addEventListener("click", () => {
+    const isHidden = dropdown.classList.toggle("hidden");
+    profileBtn.setAttribute("aria-expanded", String(!isHidden));
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".profile-switcher-wrap")) {
+      dropdown.classList.add("hidden");
+      profileBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  document.body.addEventListener("click", async (e) => {
+    const selectEl = e.target.closest("[data-select-prof]");
+    if (selectEl) {
+      state.activeProfileId = selectEl.dataset.selectProf;
+      dropdown.classList.add("hidden");
+      renderProfilesUI();
+      await loadActiveProfileData();
+      return;
+    }
+
+    const consentEl = e.target.closest("[data-toggle-consent]");
+    if (consentEl) {
+      const pid = consentEl.dataset.toggleConsent;
+      const current = consentEl.dataset.current === "true";
+      try {
+        await apiFetch(`/profiles/${pid}/consent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ consent_granted: !current, acknowledged_by_uploader: true }),
+        });
+        await loadProfiles(pid);
+        showToast(!current ? "DPDP/HIPAA consent recorded." : "Consent revoked.");
+      } catch (err) {
+        showToast(err.message, true);
+      }
+      return;
+    }
+
+    const delEl = e.target.closest("[data-delete-prof]");
+    if (delEl) {
+      const pid = delEl.dataset.deleteProf;
+      try {
+        await apiFetch(`/profiles/${pid}`, { method: "DELETE" });
+        await loadProfiles();
+        showToast("Profile removed; audit log retained.");
+      } catch (err) {
+        showToast(err.message, true);
+      }
+      return;
+    }
+
+    if (e.target.closest("[data-open-ingest]")) {
+      switchTab("ingest");
+    }
+  });
+
+  // Create Profile form
+  document.getElementById("createProfileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const created = await apiFetch("/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name_alias: document.getElementById("newProfileAlias").value,
+          relationship: document.getElementById("newProfileRel").value,
+          sex: document.getElementById("newProfileSex").value,
+          age: Number(document.getElementById("newProfileAge").value),
+          consent_granted: document.getElementById("newProfileConsent").checked,
+        }),
+      });
+      e.target.reset();
+      await loadProfiles(created.id);
+      showToast(`Profile '${created.name_alias}' created.`);
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  });
+
+  // Quick Ingest on Overview
+  document.getElementById("quickFileInput").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    document.getElementById("quickFileLabel").textContent = f ? f.name : "Attach PDF/CSV/Img";
+  });
+
+  document.getElementById("sampleCleanBtn").addEventListener("click", () => {
+    document.getElementById("quickPasteInput").value =
+      "Age: 46\nSex: M\nHbA1c: 6.4 %\nFasting Glucose: 6.8 mmol/L\nTotal Cholesterol: 5.4 mmol/L\nHDL: 44 mg/dL\nLDL: 135 mg/dL\nBP: 134/86 mmHg\nBMI: 26.8\nSmoking: former";
+  });
+
+  document.getElementById("sampleMessyBtn").addEventListener("click", () => {
+    document.getElementById("quickPasteInput").value =
+      "Patient Name: Test Subject\nHbA1c: 6.x% (garbled scan)\nBP: 82/136 mmHg\nFasting Sugar: ??? mg/dL";
+  });
+
+  document.getElementById("quickParseBtn").addEventListener("click", async () => {
+    try {
+      const file = document.getElementById("quickFileInput").files?.[0] || null;
+      const text = document.getElementById("quickPasteInput").value.trim();
+      await submitIngestion({ file, rawText: text || null });
+      document.getElementById("quickFileInput").value = "";
+      document.getElementById("quickFileLabel").textContent = "Attach PDF/CSV/Img";
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  });
+
+  // Studio Upload Form
+  document.getElementById("studioFileInput").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    document.getElementById("studioFileTitle").textContent = f ? f.name : "Drop PDF, CSV, or Image Report";
+  });
+
+  document.getElementById("studioPresetSI").addEventListener("click", () => {
+    document.getElementById("studioRawText").value =
+      "Age: 52\nSex: M\nHbA1c: 6.8 %\nFasting Glucose: 7.2 mmol/L\nTotal Cholesterol: 5.8 mmol/L\nHDL: 1.1 mmol/L\nLDL: 3.7 mmol/L\nTriglycerides: 2.1 mmol/L\nBP: 138/88 mmHg\nBMI: 27.9\nSmoking: active\nDaily Activity: 20 min";
+  });
+
+  document.getElementById("studioPresetGarbled").addEventListener("click", () => {
+    document.getElementById("studioRawText").value =
+      "Patient Name: Confidential\nAge: 61\nSex: F\nHbA1c: 7.x% garbled\nBP: 84/140 mmHg\nTotal Cholesterol: 215 mg/dL";
+  });
+
+  document.getElementById("studioUploadForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const file = document.getElementById("studioFileInput").files?.[0] || null;
+      const text = document.getElementById("studioRawText").value.trim();
+      await submitIngestion({ file, rawText: text || null });
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  });
+
+  // Confirm & Encrypt Form
+  document.getElementById("confirmBiomarkersForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!state.currentRecord || !state.activeProfileId) {
+      showToast("No extracted record selected to confirm.", true);
+      return;
+    }
+
+    const payloadRecord = { ...state.currentRecord.normalized_record };
+    for (const el of e.target.elements) {
+      if (!el.name) continue;
+      if (el.value === "") {
+        payloadRecord[el.name] = null;
+      } else if (el.type === "number") {
+        payloadRecord[el.name] = Number(el.value);
+      } else {
+        payloadRecord[el.name] = el.value;
+      }
+    }
+
+    try {
+      await apiFetch("/ingest/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          record_id: state.currentRecord.record_id,
+          profile_id: state.activeProfileId,
+          confirmed_record: payloadRecord,
+        }),
+      });
+      await loadProfiles(state.activeProfileId);
+      showToast("Biomarkers verified, encrypted at rest, and locked for Phase 2.");
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  });
+
+  // FairPulse Bridge Preview
+  document.getElementById("previewFairpulseBtn").addEventListener("click", async () => {
+    const prof = activeProfile();
+    if (!prof) return;
+    try {
+      const data = await apiFetch(`/profiles/${prof.id}/fairpulse-preview`);
+      document.getElementById("fairpulseBridgeBox").classList.remove("hidden");
+      document.getElementById("fairpulseBridgePre").textContent = JSON.stringify(data, null, 2);
+      await loadAuditLogs();
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  });
+
+  document.getElementById("refreshAuditBtn").addEventListener("click", loadAuditLogs);
+  document.getElementById("auditActionFilter").addEventListener("change", loadAuditLogs);
+}
+
+bindEvents();
+loadProfiles().catch((err) => showToast(err.message, true));
+  </script>
+</body>
+</html>

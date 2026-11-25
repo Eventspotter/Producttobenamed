@@ -1,0 +1,35 @@
+# Python & Virtual Environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Local Secrets, Keys & Databases
+.env
+.env.*
+.dev_secret.key
+*.db
+*.sqlite
+*.sqlite3
+
+# Local Encrypted Object Storage & Logs
+storage/
+logs/
+*.log
+
+# Architecture / Local Planning Docs (never push raw PDFs)
+*.pdf
+!tests/fixtures/*.pdf
+
+# OS & Editor Artifacts
+.DS_Store
+.vscode/
+.idea/
+.cursor/
+AGENTS.md
+*.tsbuildinfo
+node_modules/
+dist/

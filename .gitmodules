@@ -1,0 +1,3 @@
+[submodule "FairPulse"]
+	path = FairPulse
+	url = https://github.com/Eventspotter/FairPulse.git
