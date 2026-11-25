@@ -173,12 +173,13 @@ body {
   cursor: pointer;
   position: relative;
   z-index: 2;
-  transition: color 200ms ease;
+  transition: background 180ms ease, color 180ms ease;
 }
 
 .nav-tab:hover { color: var(--ink-primary); }
 
 .nav-tab.active {
+  background: var(--olive-accent);
   color: #FFFFFF;
 }
 
@@ -1554,7 +1555,6 @@ function updateSlidingNavPill(targetEl = null) {
     if (isNavInitial) {
       isNavInitial = false;
       gsap.set(pill, { x, y, width, height, opacity: 1 });
-      gsap.fromTo(pill, { x: x - 10, opacity: 0 }, { x, opacity: 1, duration: 0.35, ease: "power3.out" });
       return;
     }
     gsap.killTweensOf(pill);
@@ -1564,7 +1564,7 @@ function updateSlidingNavPill(targetEl = null) {
       width,
       height,
       opacity: 1,
-      duration: 0.32,
+      duration: 0.28,
       ease: "power3.out",
     });
   } else {
@@ -2574,6 +2574,7 @@ function bindEvents() {
 }
 
 bindEvents();
+updateSlidingNavPill();
 loadProfiles().then(() => {
   window.requestAnimationFrame(() => {
     updateSlidingNavPill();
